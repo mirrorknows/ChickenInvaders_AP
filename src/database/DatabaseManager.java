@@ -3,7 +3,7 @@ package database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
+//manage database connection
 public class DatabaseManager {
     private Connection connection;
 
@@ -15,5 +15,11 @@ public class DatabaseManager {
         }
     }
 
-
+    public Connection getConnection() {
+        if(connection == null)
+        {
+            connect();
+        }
+        return connection;
+    }
 }
