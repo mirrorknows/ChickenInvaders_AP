@@ -19,7 +19,6 @@ public class HowToPlayFrame extends JFrame {
     private JLabel shootLabel;
     private JLabel pauseLabel;
     private JLabel exitLabel;
-    private JLabel settingsLabel;
 
     private JButton backButton;
 
@@ -87,10 +86,6 @@ public class HowToPlayFrame extends JFrame {
         labelStyle(exitLabel);
         panel.add(exitLabel);
 
-        settingsLabel = new JLabel("M          Open Sound Settings (Optional)");
-        labelStyle(settingsLabel);
-        panel.add(settingsLabel);
-
         //button
         backButton = new JButton("Back");
 
@@ -101,6 +96,13 @@ public class HowToPlayFrame extends JFrame {
 
         panel.add(backButton);
 
+        backButton.addActionListener(e -> {
+
+            new MainMenu();
+
+            dispose();
+
+        });
         setLocationRelativeTo(null);
         setVisible(true);
 
