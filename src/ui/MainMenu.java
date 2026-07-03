@@ -73,7 +73,7 @@ public class MainMenu extends JFrame {
 
         newGameButton.setBorder(
                 BorderFactory.createLineBorder(
-                        new Color(190, 0, 255),
+                        new Color(207, 255, 4),
                         2
                 )
         );
@@ -94,7 +94,7 @@ public class MainMenu extends JFrame {
 
         highScoreButton.setBorder(
                 BorderFactory.createLineBorder(
-                        new Color(190, 0, 255),
+                        new Color(207, 255, 4),
                         2
                 )
         );
@@ -115,7 +115,7 @@ public class MainMenu extends JFrame {
 
         settingsButton.setBorder(
                 BorderFactory.createLineBorder(
-                        new Color(190, 0, 255),
+                        new Color(207, 255, 4),
                         2
                 )
         );
@@ -137,7 +137,7 @@ public class MainMenu extends JFrame {
 
         howToPlayButton.setBorder(
                 BorderFactory.createLineBorder(
-                        new Color(190, 0, 255),
+                        new Color(207, 255, 4),
                         2
                 )
         );
