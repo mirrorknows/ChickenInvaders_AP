@@ -37,7 +37,10 @@ public class LoginFrame extends JFrame {
         setSize(550, 550);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        //panel
         panel = new JPanel();
+        panel.setBackground(new Color(20,20,20));
+
         add(panel);
 
         panel.setBorder(BorderFactory.createEmptyBorder(30, 60, 30, 60));
@@ -53,36 +56,57 @@ public class LoginFrame extends JFrame {
         // welcome
         welcomeLabel = new JLabel("WELCOME!");
         welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 55));
+        welcomeLabel.setFont(new Font("Verdana", Font.BOLD, 50));
+        welcomeLabel.setForeground(new Color(255,215,0));
         panel.add(welcomeLabel);
 
         //info label : login
         infoLabel = new JLabel("Please login or register");
         infoLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        infoLabel.setForeground(Color.GRAY);
-        infoLabel.setFont(new Font("Arial", Font.BOLD, 22));
+
+        infoLabel.setForeground(Color.WHITE);
+        infoLabel.setFont(new Font("Trebuchet MS", Font.PLAIN, 27));
+
         panel.add(infoLabel);
 
         // username
         usernameLabel = new JLabel("Username:");
+        usernameLabel.setForeground(Color.WHITE);
+        usernameLabel.setFont(new Font("Consolas", Font.PLAIN, 20));
+
         panel.add(usernameLabel);
 
+
+        //username field
         usernameField = new JTextField();
+
+        usernameField.setBackground(new Color(40,40,40));
+        usernameField.setForeground(Color.WHITE);
+
         panel.add(usernameField);
 
         // password
         passwordLabel = new JLabel("Password:");
+
+        passwordLabel.setForeground(Color.WHITE);
+        passwordLabel.setFont(new Font("Consolas", Font.PLAIN, 20));
+
         panel.add(passwordLabel);
 
+        //password field
         passwordField = new JPasswordField();
+
+        passwordField.setBackground(new Color(40,40,40));
+        passwordField.setForeground(Color.WHITE);
+
         panel.add(passwordField);
 
         userService = new UserService();
 
         // buttons
+        //login button
         loginButton = new JButton("Login");
-        loginButton.setForeground(Color.WHITE);
-        loginButton.setBackground(new Color(80, 143, 152));
+        buttonStyle(loginButton);
 
         panel.add(loginButton);
 
@@ -100,6 +124,9 @@ public class LoginFrame extends JFrame {
                 JOptionPane.showMessageDialog(this,
                         "Login Successfully");
 
+                new MainMenu();
+                dispose();
+
             }else{
 
                 JOptionPane.showMessageDialog(this,
@@ -108,8 +135,9 @@ public class LoginFrame extends JFrame {
             }
         });
 
+        //register button
         registerButton = new JButton("Register");
-        registerButton.setBackground(new Color(255,255,255));
+        buttonStyle(registerButton);
 
         panel.add(registerButton);
 
@@ -118,7 +146,27 @@ public class LoginFrame extends JFrame {
             dispose();
         });
 
+
         setLocationRelativeTo(null);
         setVisible(true);
+    }
+
+
+    //the style of buttons: including background color, font,...
+
+    private void buttonStyle(JButton button){
+
+        button.setFont(new Font("Trebuchet MS", Font.BOLD,18));
+        button.setForeground(Color.WHITE);
+        button.setBackground(new Color(40,40,40));
+
+        button.setFocusPainted(false);
+
+        button.setBorder(
+                BorderFactory.createLineBorder(
+                        new Color(207,255,4),
+                        2
+                )
+        );
     }
 }
