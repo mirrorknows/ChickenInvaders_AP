@@ -115,6 +115,13 @@ public class SettingsFrame extends JFrame {
 
         panel.add(backButton);
 
+        backButton.addActionListener(e-> {
+
+            new MainMenu();
+            dispose();
+
+        });
+
         setLocationRelativeTo(null);
 
         setVisible(true);
