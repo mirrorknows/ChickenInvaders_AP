@@ -80,6 +80,13 @@ public class MainMenu extends JFrame {
 
         panel.add(newGameButton);
 
+        //new game action listener
+        newGameButton.addActionListener(e-> {
+
+            //will open game frame (coming soon)
+
+        });
+
         //high scores
         highScoreButton = new JButton("High Scores");
 
@@ -93,6 +100,13 @@ public class MainMenu extends JFrame {
         );
 
         panel.add(highScoreButton);
+
+        //high scores action listener
+        highScoreButton.addActionListener(e->{
+
+            //will open high score frame (coming soon)
+
+        });
 
         //settings
         settingsButton = new JButton("Settings");
@@ -108,6 +122,14 @@ public class MainMenu extends JFrame {
 
         panel.add(settingsButton);
 
+        //setting action listener
+        settingsButton.addActionListener(e->{
+
+            new SettingsFrame();
+
+            dispose();
+        });
+
         //how to play : guide
 
         howToPlayButton = new JButton("How To Play");
@@ -120,8 +142,14 @@ public class MainMenu extends JFrame {
                 )
         );
 
-
         panel.add(howToPlayButton);
+
+        //how to play action listener
+        howToPlayButton.addActionListener(e ->{
+            new HowToPlayFrame();
+
+            dispose();
+        });
 
         // EXIT
         exitButton = new JButton("EXIT");
@@ -136,6 +164,16 @@ public class MainMenu extends JFrame {
 
         panel.add(exitButton);
 
+        //exit action listener
+        exitButton.addActionListener(e->{
+
+            JOptionPane.showMessageDialog(this,
+                    "Thanks for playing! See you next Mission Pilot!",
+                    "Goodbye",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+            System.exit(0);
+        });
         setLocationRelativeTo(null);
         setVisible(true);
     }
