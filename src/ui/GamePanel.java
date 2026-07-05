@@ -33,6 +33,9 @@ public class GamePanel extends JPanel implements KeyListener {
 
     private int scores = 0;
 
+    private ArrayList<Egg> eggs;
+    private long lastEggDropTime = 0;
+
     public GamePanel(){
 
         setBackground(Color.BLACK);
@@ -40,6 +43,8 @@ public class GamePanel extends JPanel implements KeyListener {
         player = new Player(400,500);
 
         bullets = new ArrayList<>();
+
+        eggs = new ArrayList<>();
 
         setFocusable(true);
         requestFocusInWindow();
@@ -62,6 +67,41 @@ public class GamePanel extends JPanel implements KeyListener {
             player.stayInsideScreen(getWidth(), getHeight());
 
             chickenManager.moveGroup(getWidth());
+
+            long currentTime = System.currentTimeMillis();
+
+            if(currentTime - lastEggDropTime >= 3000){
+
+                ArrayList<Chicken> bottomChickens = chickenManager.getBottomChickens();
+
+                if(!bottomChickens.isEmpty()){
+
+                    int randomIndex = (int)(Math.random() * bottomChickens.size());
+
+                    Chicken chicken = bottomChickens.get(randomIndex);
+
+                    eggs.add(new Egg(
+                            chicken.getX() + chicken.getWidth()/2,
+                            chicken.getY() + chicken.getHeight()
+                    ));
+
+                    lastEggDropTime = currentTime;
+                }
+            }
+
+            for (int i = 0; i < eggs.size(); i++) {
+
+                Egg egg = eggs.get(i);
+
+                egg.drop();
+
+                if (egg.getY() > getHeight()) {
+
+                    eggs.remove(i);
+
+                    i--;
+                }
+            }
 
             //remove bullets that leave the screen
             for (int i = 0; i < bullets.size(); i++) {
@@ -116,6 +156,25 @@ public class GamePanel extends JPanel implements KeyListener {
                 }
             }
 
+            //check strike between egg and player(spaceship)
+            for(int i = 0 ; i < eggs.size() ; i++){
+                Egg egg = eggs.get(i);
+
+                if(player.isHit(egg)){
+
+                    player.takeDamage();
+
+                    eggs.remove(i);
+                    i--;
+
+                    if(player.getLives() <= 0){
+                        gameOver = true;
+                        gameTimer.stop();
+                    }
+                }
+            }
+
+
             repaint();
         });
 
@@ -131,7 +190,7 @@ public class GamePanel extends JPanel implements KeyListener {
 
         super.paintComponent(g);
 
-        g.setColor(Color.WHITE);
+        g.setColor(Color.GREEN);
         g.fillRect(
                 player.getX(),
                 player.getY(),
@@ -164,12 +223,30 @@ public class GamePanel extends JPanel implements KeyListener {
             );
 
         }
-        g.setColor(Color.CYAN);
+
+        g.setColor(Color.WHITE);
+
+        for (Egg egg : eggs) {
+
+            g.fillOval(
+                    egg.getX(),
+                    egg.getY(),
+                    egg.getWidth(),
+                    egg.getHeight()
+            );
+        }
+
+        //eggs
+        g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 20));
 
         g.drawString("Score : " + scores, 20, 30);
 
+        //lives
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 20));
 
+        g.drawString("Lives : " + player.getLives(), 20, 60);
     }
     @Override
     public void keyTyped(KeyEvent e) {

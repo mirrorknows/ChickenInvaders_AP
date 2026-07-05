@@ -110,4 +110,38 @@ public class ChickenManager {
         }
 
     }
+
+    //last chickens (bottom chickens)
+    public ArrayList<Chicken> getBottomChickens(){
+
+        ArrayList<Chicken> bottomChickens = new ArrayList<>();
+
+        for(int col = 0 ; col < 8 ; col++) {
+
+            Chicken bottom = null;
+
+            for (Chicken chicken : chickens) {
+
+                int chickenColumn = (chicken.getX() - 100) / 70;
+
+                if (chickenColumn == col) {
+
+                    if (bottom == null || chicken.getY() > bottom.getY()) {
+
+                        bottom = chicken;
+
+                    }
+                }
+
+            }
+            if (bottom != null) {
+
+                bottomChickens.add(bottom);
+
+            }
+        }
+        return bottomChickens;
+    }
+
+
 }

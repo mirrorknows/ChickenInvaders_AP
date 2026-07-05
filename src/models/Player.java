@@ -105,4 +105,16 @@ public class Player {
         if (y > screenHeight - height)
             y = screenHeight - height;
     }
+
+    //if player hit by eggs
+    public boolean isHit(Egg egg){
+
+        return egg.getX() < x + width &&
+                egg.getX() + egg.getWidth() > x &&
+                egg.getY() + egg.getHeight() > y;
+    }
+
+    public void takeDamage(){
+        lives--;
+    }
 }
