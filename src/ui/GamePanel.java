@@ -1,7 +1,6 @@
 package ui;
 
-import models.Bullets;
-import models.Player;
+import models.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,6 +26,12 @@ public class GamePanel extends JPanel implements KeyListener {
 
     //all bullets
     private ArrayList<Bullets> bullets;
+
+    private ChickenManager chickenManager;
+
+    private boolean gameOver = false;
+
+    private int scores = 0;
 
     public GamePanel(){
 
@@ -56,6 +61,9 @@ public class GamePanel extends JPanel implements KeyListener {
 
             player.stayInsideScreen(getWidth(), getHeight());
 
+            chickenManager.moveGroup(getWidth());
+
+            //remove bullets that leave the screen
             for (int i = 0; i < bullets.size(); i++) {
 
                 Bullets bullet = bullets.get(i);
@@ -71,19 +79,59 @@ public class GamePanel extends JPanel implements KeyListener {
                 }
             }
 
+
+            //check strike between bullet and chicken
+            for(int i = 0 ; i < bullets.size(); i++){
+
+                Bullets bullet = bullets.get(i);
+
+                for(int j = 0 ; j < chickenManager.getChickens().size(); j++){
+
+                    Chicken chicken = chickenManager.getChickens().get(j);
+
+                    //bullet hit the chicken
+                    if (chicken.isHit(bullet)) {
+
+                        chicken.takeDamage();
+
+                        //remove bullet after strike
+                        bullets.remove(i);
+                        i--;
+
+                        //remove chicken / add score (if it has no lives left)
+                        if (chicken.getLives() <= 0) {
+
+                            //increase score
+                            scores += chicken.getScore();
+
+                            chickenManager.getChickens().remove(j);
+
+                            j--;
+
+                        }
+
+                        break;
+
+                    }
+                }
+            }
+
             repaint();
         });
+
+        chickenManager = new ChickenManager();
+        chickenManager.createFormation();
 
         gameTimer.start();
     }
 
-    //draws player and bullets
+    //draw all game objects
     @Override
     protected void paintComponent(Graphics g) {
 
         super.paintComponent(g);
 
-        g.setColor(Color.CYAN);
+        g.setColor(Color.WHITE);
         g.fillRect(
                 player.getX(),
                 player.getY(),
@@ -103,6 +151,25 @@ public class GamePanel extends JPanel implements KeyListener {
             );
 
         }
+
+        g.setColor(Color.RED);
+
+        for (Chicken chicken : chickenManager.getChickens()) {
+
+            g.fillRect(
+                    chicken.getX(),
+                    chicken.getY(),
+                    chicken.getWidth(),
+                    chicken.getHeight()
+            );
+
+        }
+        g.setColor(Color.CYAN);
+        g.setFont(new Font("Arial", Font.BOLD, 20));
+
+        g.drawString("Score : " + scores, 20, 30);
+
+
     }
     @Override
     public void keyTyped(KeyEvent e) {
