@@ -23,6 +23,12 @@ public class Player {
     //last shot
     private long lastShotTime;
 
+    //last time that got hit
+    private long lastDamageTime;
+
+    //time that player will not get hit after damage
+    private final long damageCooldown = 1000;
+
     public Player(int x,int y){
 
         this.x = x;
@@ -106,7 +112,7 @@ public class Player {
             y = screenHeight - height;
     }
 
-    //if player hit by eggs
+    //if player is hit by eggs
     public boolean isHit(Egg egg){
 
         return egg.getX() < x + width &&
@@ -116,5 +122,13 @@ public class Player {
 
     public void takeDamage(){
         lives--;
+        lastDamageTime = System.currentTimeMillis();
+    }
+
+    //check if player can take damage
+    public boolean canTakeDamage(){
+
+        long currentTime = System.currentTimeMillis();
+        return currentTime - lastDamageTime  >= damageCooldown;
     }
 }

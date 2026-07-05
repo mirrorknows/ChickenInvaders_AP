@@ -36,6 +36,8 @@ public class GamePanel extends JPanel implements KeyListener {
     private ArrayList<Egg> eggs;
     private long lastEggDropTime = 0;
 
+    private int currentLevel = 1;
+
     public GamePanel(){
 
         setBackground(Color.BLACK);
@@ -156,24 +158,57 @@ public class GamePanel extends JPanel implements KeyListener {
                 }
             }
 
+            //player hits chicken
+            for(Chicken chicken : chickenManager.getChickens()){
+                if(chicken.hitPlayer(player)){
+
+                    if(player.canTakeDamage()){
+                        player.takeDamage();
+
+                        if(player.getLives() <= 0){
+                            gameOver = true;
+                            gameTimer.stop();
+                        }
+                    }
+                    break;
+                }
+            }
+
             //check strike between egg and player(spaceship)
             for(int i = 0 ; i < eggs.size() ; i++){
                 Egg egg = eggs.get(i);
 
                 if(player.isHit(egg)){
 
-                    player.takeDamage();
-
                     eggs.remove(i);
                     i--;
 
-                    if(player.getLives() <= 0){
-                        gameOver = true;
-                        gameTimer.stop();
+                    if(player.canTakeDamage()){
+                        player.takeDamage();
+
+                        if(player.getLives() <= 0){
+                            gameOver = true;
+                            gameTimer.stop();
+                        }
                     }
+
                 }
             }
 
+            if(!gameOver && chickenManager.getChickens().isEmpty()){
+
+                gameTimer.stop();
+            }
+
+            if (chickenManager.reachedBottom(getHeight())) {
+
+                gameOver = true;
+
+                gameTimer.stop();
+
+                repaint();
+
+            }
 
             repaint();
         });
@@ -247,6 +282,30 @@ public class GamePanel extends JPanel implements KeyListener {
         g.setFont(new Font("Arial", Font.BOLD, 20));
 
         g.drawString("Lives : " + player.getLives(), 20, 60);
+
+        //level
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 20));
+        g.drawString("Stage : " + currentLevel, 20, 90);
+
+        //game over
+        if (gameOver) {
+
+            g.setColor(new Color(0, 0, 0, 180));
+            g.fillRect(0, 0, getWidth(), getHeight());
+
+            g.setColor(Color.RED);
+            g.setFont(new Font("Arial", Font.BOLD, 60));
+
+            String text = "GAME OVER";
+
+            FontMetrics fm = g.getFontMetrics();
+
+            int x = (getWidth() - fm.stringWidth(text)) / 2;
+            int y = getHeight() / 2;
+
+            g.drawString(text, x, y);
+        }
     }
     @Override
     public void keyTyped(KeyEvent e) {

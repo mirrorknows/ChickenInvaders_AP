@@ -80,4 +80,12 @@ public abstract class Chicken {
                 bullet.getY() < y + height &&
                 bullet.getY() + bullet.getHeight() > y;
     }
+
+    public boolean hitPlayer(Player player){
+        return player.getX() < x + width &&
+                player.getX() + player.getWidth() > x &&
+                player.getY() < y + height &&
+                player.getY() + player.getHeight() > y;
+    }
+
 }
