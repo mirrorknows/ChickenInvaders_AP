@@ -36,6 +36,9 @@ public class GamePanel extends JPanel implements KeyListener {
     private ArrayList<Egg> eggs;
     private long lastEggDropTime = 0;
 
+    //time between two egg drops
+    private long eggDropDelay = 3000;
+
     private int currentLevel = 1;
 
     public GamePanel(){
@@ -72,7 +75,7 @@ public class GamePanel extends JPanel implements KeyListener {
 
             long currentTime = System.currentTimeMillis();
 
-            if(currentTime - lastEggDropTime >= 3000){
+            if(currentTime - lastEggDropTime >= eggDropDelay){
 
                 ArrayList<Chicken> bottomChickens = chickenManager.getBottomChickens();
 
@@ -197,7 +200,9 @@ public class GamePanel extends JPanel implements KeyListener {
 
             if(!gameOver && chickenManager.getChickens().isEmpty()){
 
-                gameTimer.stop();
+                currentLevel++;
+
+                startLevel();
             }
 
             if (chickenManager.reachedBottom(getHeight())) {
@@ -213,8 +218,7 @@ public class GamePanel extends JPanel implements KeyListener {
             repaint();
         });
 
-        chickenManager = new ChickenManager();
-        chickenManager.createFormation();
+        startLevel();
 
         gameTimer.start();
     }
@@ -246,9 +250,10 @@ public class GamePanel extends JPanel implements KeyListener {
 
         }
 
-        g.setColor(Color.RED);
+
 
         for (Chicken chicken : chickenManager.getChickens()) {
+            g.setColor(chicken.getColor());
 
             g.fillRect(
                     chicken.getX(),
@@ -286,7 +291,7 @@ public class GamePanel extends JPanel implements KeyListener {
         //level
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 20));
-        g.drawString("Stage : " + currentLevel, 20, 90);
+        g.drawString("Level : " + currentLevel, 20, 90);
 
         //game over
         if (gameOver) {
@@ -307,6 +312,22 @@ public class GamePanel extends JPanel implements KeyListener {
             g.drawString(text, x, y);
         }
     }
+
+    //create chicken for levels
+    private void startLevel(){
+
+        //level object
+        Level level = new Level(currentLevel);
+
+        //level settings
+        eggDropDelay = level.getEggDropDelay();
+
+        chickenManager = new ChickenManager(level);
+        chickenManager.createFormation();
+
+
+    }
+
     @Override
     public void keyTyped(KeyEvent e) {
 

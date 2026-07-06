@@ -1,5 +1,7 @@
 package models;
 
+import java.awt.*;
+
 public abstract class Chicken {
 
     //chicken position
@@ -53,10 +55,6 @@ public abstract class Chicken {
         return lives;
     }
 
-    public abstract void move(int direction);
-
-    public abstract int getScore();
-
     //setters
 
     public void setX(int x) {
@@ -66,6 +64,10 @@ public abstract class Chicken {
     public void setY(int y) {
         this.y = y;
     }
+
+    public abstract void move(int direction, double groupSpeed);
+
+    public abstract int getScore();
 
     //reduce one life after getting hit
     public void takeDamage(){
@@ -87,5 +89,7 @@ public abstract class Chicken {
                 player.getY() < y + height &&
                 player.getY() + player.getHeight() > y;
     }
+
+    public abstract Color getColor();
 
 }

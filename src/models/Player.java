@@ -14,8 +14,8 @@ public class Player {
     private int speed = 5;
 
     //player lives
-    private  int lives = 3;
-    private int maxLives = 5;
+    private  int lives = 60;
+    private int maxLives = 60;
 
     //shoot delay
     private final int shootDelay = 300;

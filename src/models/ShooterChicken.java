@@ -1,16 +1,27 @@
 package models;
 
-public abstract class ShooterChicken extends Chicken {
+import java.awt.*;
 
-    public ShooterChicken(int x, int y) {
+public class ShooterChicken extends Chicken {
 
-        super(x, y, 50, 50, 2, 2);
+    public ShooterChicken(int x, int y, int lives) {
 
+        super(x, y, 38, 38, 1, lives);
+
+    }
+    @Override
+    public void move(int moveDirection, double groupSpeed) {
+
+        x += (int )(speed* groupSpeed * moveDirection);
+
+    }
+    @Override
+    public int getScore(){
+        return 15;
     }
 
     @Override
-    public void move(int direction) {
-
-
+    public Color getColor() {
+        return Color.WHITE;
     }
 }
