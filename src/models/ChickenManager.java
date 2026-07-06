@@ -13,10 +13,18 @@ public class ChickenManager {
     //distance that chickens move down after touching a border
     private int moveDownStep = 20;
 
-    public ChickenManager(){
+    private Level level;
 
+    private double groupSpeed;
+
+    public ChickenManager(Level level){
+
+        this.level = level;
         chickens = new ArrayList<>();
 
+        moveDownStep = level.getMoveDownStep();
+
+        groupSpeed =  level.getGroupSpeed();
     }
 
     public ArrayList<Chicken> getChickens() {
@@ -39,29 +47,187 @@ public class ChickenManager {
 
             for (int col = 0; col < 8; col++) {
 
-                chickens.add(new NormalChicken(x, y));
+                switch (level.getLevelNumber()) {
+
+                    case 1:
+
+                        chickens.add(new NormalChicken(
+                                x,
+                                y,
+                                level.getNormalLives()
+                        ));
+
+                        break;
+
+                    case 2:
+
+                        if (col % 2 == 0) {
+
+                            chickens.add(new NormalChicken(
+                                    x,
+                                    y,
+                                    level.getNormalLives()
+                            ));
+
+                        } else {
+
+                            chickens.add(new FastChicken(
+                                    x,
+                                    y,
+                                    level.getFastLives()
+                            ));
+
+                        }
+
+                        break;
+
+                    case 3:
+
+                        if (col % 2 == 0) {
+
+                            chickens.add(new NormalChicken(
+                                    x,
+                                    y,
+                                    level.getNormalLives()
+                            ));
+
+                        } else {
+
+                            chickens.add(new ZigzagChicken(
+                                    x,
+                                    y,
+                                    level.getZigzagLives()
+                            ));
+
+                        }
+
+                        break;
+
+                    case 5:
+
+                        if (col % 2 == 0) {
+
+                            chickens.add(new ShooterChicken(
+                                    x,
+                                    y,
+                                    level.getShooterLives()
+                            ));
+
+                        } else {
+
+                            chickens.add(new FastChicken(
+                                    x,
+                                    y,
+                                    level.getFastLives()
+                            ));
+
+                        }
+
+                        break;
+
+                    case 6:
+
+                        if (col % 2 == 0) {
+
+                            chickens.add(new ShooterChicken(
+                                    x,
+                                    y,
+                                    level.getShooterLives()
+                            ));
+
+                        } else {
+
+                            chickens.add(new ZigzagChicken(
+                                    x,
+                                    y,
+                                    level.getZigzagLives()
+                            ));
+
+                        }
+
+                        break;
+
+                    case 7:
+
+                        int randomType = (int) (Math.random() * 4);
+
+                        switch (randomType) {
+
+                            case 0:
+
+                                chickens.add(new NormalChicken(
+                                        x,
+                                        y,
+                                        level.getNormalLives()
+                                ));
+
+                                break;
+
+                            case 1:
+
+                                chickens.add(new FastChicken(
+                                        x,
+                                        y,
+                                        level.getFastLives()
+                                ));
+
+                                break;
+
+                            case 2:
+
+                                chickens.add(new ZigzagChicken(
+                                        x,
+                                        y,
+                                        level.getZigzagLives()
+                                ));
+
+                                break;
+
+                            case 3:
+
+                                chickens.add(new ShooterChicken(
+                                        x,
+                                        y,
+                                        level.getShooterLives()
+                                ));
+
+                                break;
+                        }
+
+                        break;
+
+                    default:
+
+                        chickens.add(new NormalChicken(
+                                x,
+                                y,
+                                level.getNormalLives()
+                        ));
+
+                        break;
+                }
 
                 x += 70;
-
             }
-            //  move to the next row
+
             y += 60;
-
         }
-
     }
 
 
     //move whole chicken group
     public void moveGroup(int panelWidth) {
 
-        //if any chicken has reached the left or right border
+        for (Chicken chicken : chickens) {
+            chicken.move(moveDirection, groupSpeed);
+        }
+
         boolean hitBorder = false;
 
         for (Chicken chicken : chickens) {
 
-            if (chicken.getX() <= 0 ||
-                    chicken.getX() + chicken.getWidth() >= panelWidth) {
+            if (chicken.getX() < 0 ||
+                    chicken.getX() + chicken.getWidth() > panelWidth) {
 
                 hitBorder = true;
                 break;
@@ -70,20 +236,10 @@ public class ChickenManager {
 
         if (hitBorder) {
 
-            //change direction
             moveDirection *= -1;
 
             moveDown();
-
         }
-
-        //move chickens in direction
-        for (Chicken chicken : chickens) {
-
-            chicken.move(moveDirection);
-
-        }
-
     }
 
     //if  any chicken reached the bottom
@@ -142,6 +298,4 @@ public class ChickenManager {
         }
         return bottomChickens;
     }
-
-
 }

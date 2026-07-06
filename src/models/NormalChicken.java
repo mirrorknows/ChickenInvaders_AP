@@ -1,22 +1,30 @@
 package models;
 
+import java.awt.*;
+
 //this class is for normal chicken (enemy)
 public class NormalChicken extends Chicken{
 
-    public NormalChicken(int x, int y){
-        super(x,y,50,50,1,2);
+    public NormalChicken(int x, int y, int lives){
+        super(x,y,38,38,1, lives);
     }
 
     //group move in direction (right or left)
+
     @Override
-    public void move(int moveDirection){
+    public void move(int moveDirection, double groupSpeed) {
 
-        x += speed* moveDirection;
+        x += (int )(speed* groupSpeed * moveDirection);
+
     }
-
     //score player gains after killing normal chicken
     @Override
     public int getScore(){
         return 10;
+    }
+
+    @Override
+    public Color getColor(){
+        return Color.CYAN;
     }
 }
