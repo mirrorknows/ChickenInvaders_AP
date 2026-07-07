@@ -41,6 +41,10 @@ public class GamePanel extends JPanel implements KeyListener {
 
     private int currentLevel = 1;
 
+    //boss object for boss levels
+    private Boss boss;
+    private boolean bossLevel = false;
+
     public GamePanel(){
 
         setBackground(Color.BLACK);
@@ -71,7 +75,11 @@ public class GamePanel extends JPanel implements KeyListener {
 
             player.stayInsideScreen(getWidth(), getHeight());
 
-            chickenManager.moveGroup(getWidth());
+            if (bossLevel) {
+                boss.move(getWidth());
+            } else {
+                chickenManager.moveGroup(getWidth());
+            }
 
             long currentTime = System.currentTimeMillis();
 
@@ -124,39 +132,70 @@ public class GamePanel extends JPanel implements KeyListener {
                 }
             }
 
+            if(!bossLevel){
+                //check strike between bullet and chicken
+                for(int i = 0 ; i < bullets.size(); i++){
 
-            //check strike between bullet and chicken
-            for(int i = 0 ; i < bullets.size(); i++){
+                    Bullets bullet = bullets.get(i);
 
-                Bullets bullet = bullets.get(i);
+                    for(int j = 0 ; j < chickenManager.getChickens().size(); j++){
 
-                for(int j = 0 ; j < chickenManager.getChickens().size(); j++){
+                        Chicken chicken = chickenManager.getChickens().get(j);
 
-                    Chicken chicken = chickenManager.getChickens().get(j);
+                        //bullet hit the chicken
+                        if (chicken.isHit(bullet)) {
 
-                    //bullet hit the chicken
-                    if (chicken.isHit(bullet)) {
+                            chicken.takeDamage();
 
-                        chicken.takeDamage();
+                            //remove bullet after strike
+                            bullets.remove(i);
+                            i--;
 
-                        //remove bullet after strike
+                            //remove chicken / add score (if it has no lives left)
+                            if (chicken.getLives() <= 0) {
+
+                                //increase score
+                                scores += chicken.getScore();
+
+                                chickenManager.getChickens().remove(j);
+
+                                j--;
+
+                            }
+
+                            break;
+
+                        }
+                    }
+                }
+            }
+
+            if (bossLevel && boss != null) {
+
+                for (int i = 0; i < bullets.size(); i++) {
+
+                    Bullets bullet = bullets.get(i);
+
+                    if (boss.isHit(bullet)) {
+
+                        boss.takeDamage();
+
                         bullets.remove(i);
                         i--;
 
-                        //remove chicken / add score (if it has no lives left)
-                        if (chicken.getLives() <= 0) {
+                        if (boss.isDead()) {
 
-                            //increase score
-                            scores += chicken.getScore();
+                            scores += 500;
 
-                            chickenManager.getChickens().remove(j);
+                            currentLevel = 5;
 
-                            j--;
+                            bossLevel = false;
+                            boss = null;
 
+                            startLevel();
                         }
 
                         break;
-
                     }
                 }
             }
@@ -198,14 +237,21 @@ public class GamePanel extends JPanel implements KeyListener {
                 }
             }
 
-            if(!gameOver && chickenManager.getChickens().isEmpty()){
+            //go to next level after killing all chickens
+            if (!gameOver && !bossLevel && chickenManager.getChickens().isEmpty()) {
 
-                currentLevel++;
-
-                startLevel();
+                if (currentLevel == 3) {
+                    scores += 200;
+                    currentLevel = 4;
+                    startBossLevel4();
+                } else {
+                    scores += 200;
+                    currentLevel++;
+                    startLevel();
+                }
             }
 
-            if (chickenManager.reachedBottom(getHeight())) {
+            if (!bossLevel && chickenManager.reachedBottom(getHeight())) {
 
                 gameOver = true;
 
@@ -252,16 +298,22 @@ public class GamePanel extends JPanel implements KeyListener {
 
 
 
-        for (Chicken chicken : chickenManager.getChickens()) {
-            g.setColor(chicken.getColor());
+        if (bossLevel && boss != null) {
 
-            g.fillRect(
-                    chicken.getX(),
-                    chicken.getY(),
-                    chicken.getWidth(),
-                    chicken.getHeight()
-            );
+            boss.draw(g);
 
+        } else {
+
+            for (Chicken chicken : chickenManager.getChickens()) {
+                g.setColor(chicken.getColor());
+
+                g.fillRect(
+                        chicken.getX(),
+                        chicken.getY(),
+                        chicken.getWidth(),
+                        chicken.getHeight()
+                );
+            }
         }
 
         g.setColor(Color.WHITE);
@@ -326,6 +378,18 @@ public class GamePanel extends JPanel implements KeyListener {
         chickenManager.createFormation();
 
 
+    }
+
+    //start first boss level after level 3
+    private void startBossLevel4() {
+        bossLevel = true;
+
+        boss = new Boss(300, 80, 50);
+
+        eggs.clear();
+        bullets.clear();
+
+        lastEggDropTime = System.currentTimeMillis();
     }
 
     @Override
