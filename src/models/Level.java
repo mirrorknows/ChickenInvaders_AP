@@ -29,7 +29,7 @@ public class Level {
             case 1:
 
                 groupSpeed = 1;
-                moveDownStep = 8;
+                moveDownStep = 20;
                 eggDropDelay = 3000;
 
                 normalLives = 2;
@@ -42,7 +42,7 @@ public class Level {
             case 2:
 
                 groupSpeed = 1.5;
-                moveDownStep = 8;
+                moveDownStep = 20;
                 eggDropDelay = 2000;
 
                 normalLives = 2;
@@ -55,7 +55,7 @@ public class Level {
             case 3:
 
                 groupSpeed = 2;
-                moveDownStep = 10;
+                moveDownStep = 25;
                 eggDropDelay = 1500;
 
                 normalLives = 3;
@@ -68,7 +68,7 @@ public class Level {
             case 5:
 
                 groupSpeed = 2.5;
-                moveDownStep = 10;
+                moveDownStep = 25;
                 eggDropDelay = 1000;
 
                 normalLives = 3;
@@ -81,7 +81,7 @@ public class Level {
             case 6:
 
                 groupSpeed = 3;
-                moveDownStep = 12;
+                moveDownStep = 30;
                 eggDropDelay = 800;
 
                 normalLives = 0;
@@ -94,7 +94,7 @@ public class Level {
             case 7:
 
                 groupSpeed = 3.5;
-                moveDownStep = 12;
+                moveDownStep = 30;
                 eggDropDelay = 700;
 
                 normalLives = 3;

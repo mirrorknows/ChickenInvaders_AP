@@ -36,6 +36,9 @@ public class GamePanel extends JPanel implements KeyListener {
     private ArrayList<Egg> eggs;
     private long lastEggDropTime = 0;
 
+    //all power ups in the game
+    private ArrayList<PowerUp> powerUps;
+
     //time between two egg drops
     private long eggDropDelay = 3000;
 
@@ -45,6 +48,10 @@ public class GamePanel extends JPanel implements KeyListener {
     private Boss boss;
     private boolean bossLevel = false;
 
+    //max powerups on the screen
+    private final int maxPowerUpsOnScreen = 3 ;
+
+    String type;
     public GamePanel(){
 
         setBackground(Color.BLACK);
@@ -54,6 +61,8 @@ public class GamePanel extends JPanel implements KeyListener {
         bullets = new ArrayList<>();
 
         eggs = new ArrayList<>();
+
+        powerUps = new ArrayList<>();
 
         setFocusable(true);
         requestFocusInWindow();
@@ -116,6 +125,31 @@ public class GamePanel extends JPanel implements KeyListener {
                 }
             }
 
+            for(int i = 0 ; i < powerUps.size(); i++){
+
+                PowerUp powerUp = powerUps.get(i);
+
+                powerUp.fall();
+
+                //remove power up if it leaves screen
+                if(powerUp.getY() > getHeight()){
+
+                    powerUps.remove(i);
+                    i--;
+                    continue;
+
+                }
+                if(powerUp.hitPlayer(player)){
+
+                    if (powerUp.getType().equals("ADD_FIRE")) {
+                        player.addFire();
+                    } else if (powerUp.getType().equals("EXTRA_LIFE")) {
+                        player.addLife();
+                    }
+
+                    powerUps.remove(i);
+                    i--;                }
+            }
             //remove bullets that leave the screen
             for (int i = 0; i < bullets.size(); i++) {
 
@@ -157,10 +191,32 @@ public class GamePanel extends JPanel implements KeyListener {
                                 //increase score
                                 scores += chicken.getScore();
 
+                                //20% chance to drop powerup + limit number of powerups
+                                if (Math.random() < 0.20 && powerUps.size() < maxPowerUpsOnScreen) {
+
+                                    String type;
+
+                                    if(player.getFireCount() >= player.getMaxFireCount()){
+                                        type = "EXTRA_LIFE";
+                                    }else{
+
+                                        if(Math.random() < 0.5){
+                                            type = "ADD_FIRE";
+                                        }else{
+                                            type = "EXTRA_LIFE";
+                                        }
+                                    }
+
+                                    powerUps.add(new PowerUp(
+                                            chicken.getX(),
+                                            chicken.getY(),
+                                            type
+                                    ));
+                                }
+
                                 chickenManager.getChickens().remove(j);
 
                                 j--;
-
                             }
 
                             break;
@@ -328,7 +384,11 @@ public class GamePanel extends JPanel implements KeyListener {
             );
         }
 
-        //eggs
+        //draw power ups
+        for(PowerUp powerUp : powerUps){
+            powerUp.draw(g);
+        }
+        //score
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 20));
 
@@ -344,6 +404,11 @@ public class GamePanel extends JPanel implements KeyListener {
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 20));
         g.drawString("Level : " + currentLevel, 20, 90);
+
+        //fire count
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 20));
+        g.drawString("Fire : " + player.getFireCount(), 20, 120);
 
         //game over
         if (gameOver) {
@@ -377,7 +442,9 @@ public class GamePanel extends JPanel implements KeyListener {
         chickenManager = new ChickenManager(level);
         chickenManager.createFormation();
 
-
+        eggs.clear();
+        bullets.clear();
+        powerUps.clear();
     }
 
     //start first boss level after level 3
@@ -436,10 +503,21 @@ public class GamePanel extends JPanel implements KeyListener {
 
                 if (currentTime - player.getLastShotTime() >= player.getShootDelay()){
 
-                    bullets.add(new Bullets(
-                            player.getX() + player.getWidth()/ 2 ,
-                            player.getY())
-                    );
+                    int fireCount = player.getFireCount();
+
+                    int spacing = 12;
+
+                    int startX = player.getX() + player.getWidth() / 2 -
+                            ((fireCount - 1) * spacing) / 2;
+
+                    for (int i = 0; i < fireCount; i++) {
+
+                        bullets.add(new Bullets(
+                                startX + i * spacing,
+                                player.getY()
+                        ));
+
+                    }
 
                     player.setLastShotTime(currentTime);
                 }
