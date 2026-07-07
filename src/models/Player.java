@@ -14,8 +14,12 @@ public class Player {
     private int speed = 5;
 
     //player lives
-    private  int lives = 60;
-    private int maxLives = 60;
+    private  int lives = 3;
+    private int maxLives = 5;
+
+    //number of bullets in one shot
+    private int fireCount = 1;
+    private int maxFireCount = 5;
 
     //shoot delay
     private final int shootDelay = 300;
@@ -28,6 +32,7 @@ public class Player {
 
     //time that player will not get hit after damage
     private final long damageCooldown = 1000;
+
 
     public Player(int x,int y){
 
@@ -64,6 +69,14 @@ public class Player {
 
     public int getMaxLives() {
         return maxLives;
+    }
+
+    public int getFireCount() {
+        return fireCount;
+    }
+
+    public int getMaxFireCount() {
+        return maxFireCount;
     }
 
     public int getShootDelay() {
@@ -130,5 +143,19 @@ public class Player {
 
         long currentTime = System.currentTimeMillis();
         return currentTime - lastDamageTime  >= damageCooldown;
+    }
+
+    //increase number of bullets
+    public void addFire() {
+        if(fireCount < maxFireCount){
+            fireCount++;
+        }
+    }
+
+    //add one life if player is not full
+    public void addLife() {
+        if (lives < maxLives) {
+            lives++;
+        }
     }
 }
