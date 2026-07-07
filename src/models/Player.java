@@ -33,6 +33,14 @@ public class Player {
     //time that player will not get hit after damage
     private final long damageCooldown = 1000;
 
+    //rapid fire settings
+    private boolean rapidFireActive = false;
+    private long rapidFireEndTime = 0;
+    private final int rapidFireDelay = 100;
+
+    //shield settings
+    private boolean shieldActive = false;
+    private long shieldEndTime = 0;
 
     public Player(int x,int y){
 
@@ -130,6 +138,7 @@ public class Player {
 
         return egg.getX() < x + width &&
                 egg.getX() + egg.getWidth() > x &&
+                egg.getY() < y + height &&
                 egg.getY() + egg.getHeight() > y;
     }
 
@@ -157,5 +166,60 @@ public class Player {
         if (lives < maxLives) {
             lives++;
         }
+    }
+
+    //activate rapid fire for 8 seconds
+    public void activateRapidFire() {
+
+        rapidFireActive = true;
+
+        rapidFireEndTime = System.currentTimeMillis() + 8000;
+
+    }
+
+    //check if rapid fire is active
+    public boolean isRapidFireActive() {
+
+        if(rapidFireActive &&
+                System.currentTimeMillis() > rapidFireEndTime) {
+
+            rapidFireActive = false;
+
+        }
+
+        return rapidFireActive;
+    }
+
+    //return current shoot delay
+    public int getCurrentShootDelay() {
+
+        if(isRapidFireActive()) {
+
+            return rapidFireDelay;
+
+        }
+
+        return shootDelay;
+    }
+    //shield for 10 seconds
+    public void activateShield() {
+
+        shieldActive = true;
+
+        shieldEndTime = System.currentTimeMillis() + 10000;
+
+    }
+
+    //check if shield is active
+    public boolean isShieldActive() {
+
+        if(shieldActive &&
+                System.currentTimeMillis() > shieldEndTime) {
+
+            shieldActive = false;
+
+        }
+
+        return shieldActive;
     }
 }

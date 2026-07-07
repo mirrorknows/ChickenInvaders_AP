@@ -51,6 +51,10 @@ public class GamePanel extends JPanel implements KeyListener {
     //max powerups on the screen
     private final int maxPowerUpsOnScreen = 3 ;
 
+    //freeze bomb settings
+    private boolean freezeActive = false;
+    private long freezeEndTime = 0;
+
     String type;
     public GamePanel(){
 
@@ -84,15 +88,18 @@ public class GamePanel extends JPanel implements KeyListener {
 
             player.stayInsideScreen(getWidth(), getHeight());
 
-            if (bossLevel) {
-                boss.move(getWidth());
-            } else {
-                chickenManager.moveGroup(getWidth());
+            if(!isFreezeActive()){
+                if (bossLevel) {
+                    boss.move(getWidth());
+                } else {
+                    chickenManager.moveGroup(getWidth());
+                }
             }
+
 
             long currentTime = System.currentTimeMillis();
 
-            if(currentTime - lastEggDropTime >= eggDropDelay){
+            if(!isFreezeActive() && currentTime - lastEggDropTime >= eggDropDelay){
 
                 ArrayList<Chicken> bottomChickens = chickenManager.getBottomChickens();
 
@@ -115,7 +122,9 @@ public class GamePanel extends JPanel implements KeyListener {
 
                 Egg egg = eggs.get(i);
 
-                egg.drop();
+                if(!isFreezeActive()){
+                    egg.drop();
+                }
 
                 if (egg.getY() > getHeight()) {
 
@@ -143,8 +152,19 @@ public class GamePanel extends JPanel implements KeyListener {
 
                     if (powerUp.getType().equals("ADD_FIRE")) {
                         player.addFire();
+
                     } else if (powerUp.getType().equals("EXTRA_LIFE")) {
                         player.addLife();
+
+                    } else if (powerUp.getType().equals("RAPID_FIRE")) {
+                        player.activateRapidFire();
+
+                    } else if (powerUp.getType().equals("SHIELD")) {
+                        player.activateShield();
+
+                    }else if (powerUp.getType().equals("FREEZE_BOMB")) {
+                        activateFreezeBomb();
+
                     }
 
                     powerUps.remove(i);
@@ -196,15 +216,38 @@ public class GamePanel extends JPanel implements KeyListener {
 
                                     String type;
 
-                                    if(player.getFireCount() >= player.getMaxFireCount()){
-                                        type = "EXTRA_LIFE";
-                                    }else{
+                                    int randomPower = (int)(Math.random() * 5);
 
-                                        if(Math.random() < 0.5){
+                                    if(randomPower == 0) {
+
+                                        //if add fire is full, give rapid fire instead
+                                        if(player.getFireCount() < player.getMaxFireCount()) {
                                             type = "ADD_FIRE";
-                                        }else{
-                                            type = "EXTRA_LIFE";
+                                        } else {
+                                            type = "RAPID_FIRE";
                                         }
+
+                                    } else if(randomPower == 1) {
+
+                                        //if lives are full, give shield instead
+                                        if(player.getLives() < player.getMaxLives()) {
+                                            type = "EXTRA_LIFE";
+                                        } else {
+                                            type = "SHIELD";
+                                        }
+
+                                    } else if(randomPower == 2) {
+
+                                        type = "RAPID_FIRE";
+
+                                    } else if(randomPower == 3) {
+
+                                        type = "SHIELD";
+
+                                    } else {
+
+                                        type = "FREEZE_BOMB";
+
                                     }
 
                                     powerUps.add(new PowerUp(
@@ -218,7 +261,6 @@ public class GamePanel extends JPanel implements KeyListener {
 
                                 j--;
                             }
-
                             break;
 
                         }
@@ -282,11 +324,16 @@ public class GamePanel extends JPanel implements KeyListener {
                     i--;
 
                     if(player.canTakeDamage()){
-                        player.takeDamage();
 
-                        if(player.getLives() <= 0){
-                            gameOver = true;
-                            gameTimer.stop();
+                        if (!player.isShieldActive()){
+
+                            player.takeDamage();
+
+                            if(player.getLives() <= 0) {
+                                gameOver = true;
+                                gameTimer.stop();
+                            }
+
                         }
                     }
 
@@ -338,7 +385,19 @@ public class GamePanel extends JPanel implements KeyListener {
                 player.getWidth(),
                 player.getHeight()
         );
+        //draw shield around player
+        if(player.isShieldActive()) {
 
+            g.setColor(Color.CYAN);
+
+            g.drawOval(
+                    player.getX() - 10,
+                    player.getY() - 10,
+                    player.getWidth() + 20,
+                    player.getHeight() + 20
+            );
+
+        }
         g.setColor(Color.YELLOW);
 
         for(Bullets bullet : bullets){
@@ -388,6 +447,8 @@ public class GamePanel extends JPanel implements KeyListener {
         for(PowerUp powerUp : powerUps){
             powerUp.draw(g);
         }
+
+
         //score
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 20));
@@ -409,6 +470,24 @@ public class GamePanel extends JPanel implements KeyListener {
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 20));
         g.drawString("Fire : " + player.getFireCount(), 20, 120);
+
+        //freeze status
+        if(isFreezeActive()) {
+
+            g.setColor(Color.BLUE);
+            g.setFont(new Font("Arial", Font.BOLD, 20));
+            g.drawString("Freeze", 20, 190);
+
+        }
+
+        //rapid fire status
+        if(player.isRapidFireActive()) {
+
+            g.setColor(Color.YELLOW);
+            g.setFont(new Font("Arial", Font.BOLD, 20));
+            g.drawString("Rapid Fire", 20, 150);
+
+        }
 
         //game over
         if (gameOver) {
@@ -459,6 +538,27 @@ public class GamePanel extends JPanel implements KeyListener {
         lastEggDropTime = System.currentTimeMillis();
     }
 
+    //freeze bomb for 3 sec
+    private void activateFreezeBomb() {
+
+        freezeActive = true;
+
+        freezeEndTime = System.currentTimeMillis() + 3000;
+
+    }
+
+    //check freeze time
+    private boolean isFreezeActive() {
+
+        if(freezeActive &&
+                System.currentTimeMillis() > freezeEndTime) {
+
+            freezeActive = false;
+
+        }
+
+        return freezeActive;
+    }
     @Override
     public void keyTyped(KeyEvent e) {
 
@@ -501,7 +601,7 @@ public class GamePanel extends JPanel implements KeyListener {
 
             case KeyEvent.VK_SPACE:
 
-                if (currentTime - player.getLastShotTime() >= player.getShootDelay()){
+                if (currentTime - player.getLastShotTime() >= player.getCurrentShootDelay()){
 
                     int fireCount = player.getFireCount();
 
