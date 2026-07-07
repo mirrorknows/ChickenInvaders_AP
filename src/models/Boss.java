@@ -19,6 +19,17 @@ public class Boss {
 
     private int speed = 2;
 
+    //vertical movement settings
+    private int startY;
+
+    private double angle = 0;
+
+    private int verticalRange = 30;
+
+    //boss attack settings
+    private long lastAttackTime = 0;
+    private final long attackDelay = 1500;
+
     public Boss(int x, int y, int lives) {
         this.x = x;
         this.y = y;
@@ -28,16 +39,24 @@ public class Boss {
 
         this.lives = lives;
         this.maxLives = lives;
+
+        this.startY = y;
     }
 
     //move boss left and right
     public void move(int panelWidth) {
+        //horizontal movement
         x += speed;
 
-        //change direction after touching screen borders
+        //change direction at borders
         if (x <= 0 || x + width >= panelWidth) {
             speed *= -1;
         }
+
+        //vertical smooth movement
+        angle += 0.05;
+        y = startY + (int)(verticalRange * Math.sin(angle));
+
     }
 
     //reduce boss life after getting hit
@@ -83,6 +102,18 @@ public class Boss {
         g.setColor(Color.WHITE);
         g.drawRect(barX, barY, barWidth, barHeight);
     }
+    //if boss can attack
+    public boolean canAttack(){
+
+        long currentTime = System.currentTimeMillis();
+
+        if(currentTime - lastAttackTime >= attackDelay){
+
+            lastAttackTime = currentTime;
+            return true;
+        }
+        return false;
+    }
 
     //getters
     public int getX() {
@@ -100,4 +131,5 @@ public class Boss {
     public int getHeight() {
         return height;
     }
+
 }

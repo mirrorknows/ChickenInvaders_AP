@@ -99,7 +99,8 @@ public class GamePanel extends JPanel implements KeyListener {
 
             long currentTime = System.currentTimeMillis();
 
-            if(!isFreezeActive() && currentTime - lastEggDropTime >= eggDropDelay){
+            if(!bossLevel && !isFreezeActive()
+                    && currentTime - lastEggDropTime >= eggDropDelay){
 
                 ArrayList<Chicken> bottomChickens = chickenManager.getBottomChickens();
 
@@ -126,10 +127,13 @@ public class GamePanel extends JPanel implements KeyListener {
                     egg.drop();
                 }
 
-                if (egg.getY() > getHeight()) {
-
+                if(
+                                egg.getX() < 0 ||
+                                egg.getX() > getWidth() ||
+                                egg.getY() < 0 ||
+                                egg.getY() > getHeight()
+                ){
                     eggs.remove(i);
-
                     i--;
                 }
             }
@@ -270,6 +274,44 @@ public class GamePanel extends JPanel implements KeyListener {
 
             if (bossLevel && boss != null) {
 
+                if(boss.canAttack() && !isFreezeActive()){
+
+                    int centerX = boss.getX() + boss.getWidth() / 2;
+                    int centerY = boss.getY() + boss.getHeight() / 2;
+
+                    //up
+                    eggs.add(new Egg(
+                            centerX,
+                            centerY,
+                            0,
+                            -4
+                    ));
+
+                    //down
+                    eggs.add(new Egg(
+                            centerX,
+                            centerY,
+                            0,
+                            4
+                    ));
+
+                    //left
+                    eggs.add(new Egg(
+                            centerX,
+                            centerY,
+                            -4,
+                            0
+                    ));
+
+                    //right
+                    eggs.add(new Egg(
+                            centerX,
+                            centerY,
+                            4,
+                            0
+                    ));
+
+                }
                 for (int i = 0; i < bullets.size(); i++) {
 
                     Bullets bullet = bullets.get(i);
@@ -284,7 +326,6 @@ public class GamePanel extends JPanel implements KeyListener {
                         if (boss.isDead()) {
 
                             scores += 500;
-
                             currentLevel = 5;
 
                             bossLevel = false;
