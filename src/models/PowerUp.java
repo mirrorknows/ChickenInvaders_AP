@@ -50,7 +50,19 @@ public class PowerUp {
 
             g.setColor(Color.GREEN);
 
-        }
+        } else if(type.equals("RAPID_FIRE")) {
+
+            g.setColor(Color.YELLOW);
+
+        } else if(type.equals("SHIELD")) {
+
+        g.setColor(Color.CYAN);
+
+        }else if(type.equals("FREEZE_BOMB")) {
+
+        g.setColor(Color.BLUE);
+
+    }
 
 
         g.fillOval(x, y, width, height);
@@ -66,6 +78,18 @@ public class PowerUp {
         } else if(type.equals("EXTRA_LIFE")) {
 
             g.drawString("+", x + 8, y + 17);
+
+        } else if(type.equals("RAPID_FIRE")) {
+
+            g.drawString("R", x + 8, y + 17);
+
+        } else if(type.equals("SHIELD")) {
+
+            g.drawString("S", x + 8, y + 17);
+
+        } else if(type.equals("FREEZE_BOMB")) {
+
+            g.drawString("B", x + 10, y + 17);
 
         }
 
