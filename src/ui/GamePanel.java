@@ -36,6 +36,10 @@ public class GamePanel extends JPanel implements KeyListener {
     private ArrayList<Egg> eggs;
     private long lastEggDropTime = 0;
 
+    //shooter chicken attach time
+    private long lastShooterShotTime = 0 ;
+    private final long shooterShotDelay = 2000;
+
     //all explosions in the game
     private ArrayList<Explosion> explosions;
 
@@ -58,7 +62,6 @@ public class GamePanel extends JPanel implements KeyListener {
     private boolean freezeActive = false;
     private long freezeEndTime = 0;
 
-    String type;
     public GamePanel(){
 
         setBackground(Color.BLACK);
@@ -121,6 +124,14 @@ public class GamePanel extends JPanel implements KeyListener {
                     ));
 
                     lastEggDropTime = currentTime;
+                }
+
+                //shooter chicken attack
+                if(!bossLevel && !isFreezeActive()
+                                && currentTime - lastShooterShotTime >= shooterShotDelay){
+
+                    shooterChickenAttack();
+                    lastShooterShotTime = currentTime;
                 }
             }
 
@@ -608,6 +619,8 @@ public class GamePanel extends JPanel implements KeyListener {
         eggs.clear();
         bullets.clear();
         powerUps.clear();
+
+        lastShooterShotTime = System.currentTimeMillis();
     }
 
     //start first boss level after level 3
@@ -620,6 +633,26 @@ public class GamePanel extends JPanel implements KeyListener {
         bullets.clear();
 
         lastEggDropTime = System.currentTimeMillis();
+    }
+
+    //choose one chicken and shoot
+    private void shooterChickenAttack() {
+
+        if(chickenManager.getChickens().isEmpty()) {
+            return;
+        }
+
+        int randomIndex = (int)(Math.random() * chickenManager.getChickens().size());
+
+        Chicken chicken = chickenManager.getChickens().get(randomIndex);
+
+        Egg egg = chicken.shootAtPlayer(player);
+
+        if(egg != null) {
+
+            eggs.add(egg);
+
+        }
     }
 
     //freeze bomb for 3 sec

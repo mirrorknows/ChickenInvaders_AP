@@ -90,6 +90,12 @@ public abstract class Chicken {
                 player.getY() + player.getHeight() > y;
     }
 
+    //normal zigzag and fast don't shoot horizontally
+    public Egg shootAtPlayer(Player player) {
+
+        return null;
+
+    }
     public abstract Color getColor();
 
 }

@@ -12,12 +12,38 @@ public class ShooterChicken extends Chicken {
     @Override
     public void move(int moveDirection, double groupSpeed) {
 
-        x += (int )(speed* groupSpeed * moveDirection);
+        x += (int )(speed * groupSpeed * moveDirection);
 
     }
+
+    //shooter chicken shoots horizontally at player
+    @Override
+    public Egg shootAtPlayer(Player player) {
+
+        int startX = getX() + getWidth() / 2;
+        int startY = getY() + getHeight() / 2;
+
+        int playerCenterX = player.getX() + player.getWidth() / 2;
+
+        int dx;
+
+        if(playerCenterX < startX) {
+            dx = -4;
+        } else {
+            dx = 4;
+        }
+
+        return new Egg(
+                startX,
+                startY,
+                dx,
+                0
+        );
+    }
+
     @Override
     public int getScore(){
-        return 15;
+        return 25;
     }
 
     @Override
