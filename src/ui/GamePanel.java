@@ -36,6 +36,9 @@ public class GamePanel extends JPanel implements KeyListener {
     private ArrayList<Egg> eggs;
     private long lastEggDropTime = 0;
 
+    //all explosions in the game
+    private ArrayList<Explosion> explosions;
+
     //all power ups in the game
     private ArrayList<PowerUp> powerUps;
 
@@ -67,6 +70,8 @@ public class GamePanel extends JPanel implements KeyListener {
         eggs = new ArrayList<>();
 
         powerUps = new ArrayList<>();
+
+        explosions = new ArrayList<>();
 
         setFocusable(true);
         requestFocusInWindow();
@@ -215,6 +220,13 @@ public class GamePanel extends JPanel implements KeyListener {
                                 //increase score
                                 scores += chicken.getScore();
 
+                                //add explosion when chicken dies
+                                explosions.add(new Explosion(
+                                        chicken.getX() + chicken.getWidth() / 2,
+                                        chicken.getY() + chicken.getHeight() / 2,
+                                        60
+                                ));
+
                                 //20% chance to drop powerup + limit number of powerups
                                 if (Math.random() < 0.20 && powerUps.size() < maxPowerUpsOnScreen) {
 
@@ -326,6 +338,14 @@ public class GamePanel extends JPanel implements KeyListener {
                         if (boss.isDead()) {
 
                             scores += 500;
+
+                            //add explosion when boss dies
+                            explosions.add(new Explosion(
+                                    boss.getX() + boss.getWidth() / 2,
+                                    boss.getY() + boss.getHeight() / 2,
+                                    180
+                            ));
+
                             currentLevel = 5;
 
                             bossLevel = false;
@@ -360,6 +380,13 @@ public class GamePanel extends JPanel implements KeyListener {
                 Egg egg = eggs.get(i);
 
                 if(player.isHit(egg)){
+
+                    //add explosion when egg hits player
+                    explosions.add(new Explosion(
+                            egg.getX() + egg.getWidth() / 2,
+                            egg.getY() + egg.getHeight() / 2,
+                            50
+                    ));
 
                     eggs.remove(i);
                     i--;
@@ -404,7 +431,18 @@ public class GamePanel extends JPanel implements KeyListener {
                 repaint();
 
             }
+            //remove finished explosions
+            for(int i = 0; i < explosions.size(); i++) {
 
+                Explosion explosion = explosions.get(i);
+
+                if(explosion.isFinished()) {
+
+                    explosions.remove(i);
+                    i--;
+
+                }
+            }
             repaint();
         });
 
@@ -452,8 +490,6 @@ public class GamePanel extends JPanel implements KeyListener {
 
         }
 
-
-
         if (bossLevel && boss != null) {
 
             boss.draw(g);
@@ -482,6 +518,13 @@ public class GamePanel extends JPanel implements KeyListener {
                     egg.getWidth(),
                     egg.getHeight()
             );
+        }
+
+        //draw explosions
+        for(Explosion explosion : explosions) {
+
+            explosion.draw(g);
+
         }
 
         //draw power ups
