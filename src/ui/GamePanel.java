@@ -125,14 +125,14 @@ public class GamePanel extends JPanel implements KeyListener {
 
                     lastEggDropTime = currentTime;
                 }
+            }
 
-                //shooter chicken attack
-                if(!bossLevel && !isFreezeActive()
-                                && currentTime - lastShooterShotTime >= shooterShotDelay){
+            //shooter chicken attack
+            if(!bossLevel && !isFreezeActive()
+                    && currentTime - lastShooterShotTime >= shooterShotDelay){
 
-                    shooterChickenAttack();
-                    lastShooterShotTime = currentTime;
-                }
+                shooterChickenAttack();
+                lastShooterShotTime = currentTime;
             }
 
             for (int i = 0; i < eggs.size(); i++) {
@@ -285,7 +285,7 @@ public class GamePanel extends JPanel implements KeyListener {
                                 }
 
                                 chickenManager.getChickens().remove(j);
-
+                                chickenManager.replaceChickenIfNeeded(chicken, getWidth());
                                 j--;
                             }
                             break;

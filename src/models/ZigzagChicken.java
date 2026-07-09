@@ -14,7 +14,7 @@ public class ZigzagChicken extends Chicken {
 
     public ZigzagChicken(int x, int y, int lives) {
 
-        super(x, y, 38, 38, 1, lives);
+        super(x, y, 35, 35, 1, lives);
         startY = y;
     }
 
