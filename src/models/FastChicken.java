@@ -6,7 +6,7 @@ public class FastChicken extends Chicken {
 
     public FastChicken(int x, int y, int lives) {
 
-        super(x, y, 38, 38, 2, lives);
+        super(x, y, 35, 35, 2, lives);
 
     }
 

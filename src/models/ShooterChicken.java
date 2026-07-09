@@ -6,7 +6,7 @@ public class ShooterChicken extends Chicken {
 
     public ShooterChicken(int x, int y, int lives) {
 
-        super(x, y, 38, 38, 1, lives);
+        super(x, y, 35, 35, 1, lives);
 
     }
     @Override

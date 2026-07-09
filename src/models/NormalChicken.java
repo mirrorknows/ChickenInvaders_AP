@@ -6,7 +6,7 @@ import java.awt.*;
 public class NormalChicken extends Chicken{
 
     public NormalChicken(int x, int y, int lives){
-        super(x,y,38,38,1, lives);
+        super(x,y,35,35,1, lives);
     }
 
     //group move in direction (right or left)

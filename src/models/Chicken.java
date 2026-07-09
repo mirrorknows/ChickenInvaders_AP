@@ -17,6 +17,14 @@ public abstract class Chicken {
 
     protected int lives;
 
+    //cell for the chicken
+    protected Cell cell;
+
+    protected boolean movingToCell = false;
+
+    protected int targetX;
+    protected int targetY;
+
     public Chicken(int x, int y, int width, int height, int speed, int lives){
 
         this.x = x;
@@ -55,6 +63,18 @@ public abstract class Chicken {
         return lives;
     }
 
+
+    public int getTargetX(){
+
+        return targetX;
+
+    }
+
+    public int getTargetY(){
+
+        return targetY;
+
+    }
     //setters
 
     public void setX(int x) {
@@ -65,7 +85,81 @@ public abstract class Chicken {
         this.y = y;
     }
 
+    public void setCell(Cell cell) {
+        this.cell = cell;
+    }
+
+    public Cell getCell(){
+
+        return cell;
+
+    }
+
+    public boolean isMovingToCell(){
+
+        return movingToCell;
+
+    }
+
+    public void startMovingToCell(){
+
+        movingToCell = true;
+
+    }
     public abstract void move(int direction, double groupSpeed);
+
+    // move replacement chicken to its current cell
+    public void moveToCell(){
+
+        if(cell == null){
+            return;
+        }
+
+        int speed = 2;
+
+        int currentTargetX = cell.getX();
+        int currentTargetY = cell.getY();
+
+        if(x < currentTargetX){
+
+            x += speed;
+
+            if(x > currentTargetX){
+                x = currentTargetX;
+            }
+
+        } else if(x > currentTargetX){
+
+            x -= speed;
+
+            if(x < currentTargetX){
+                x = currentTargetX;
+            }
+        }
+
+        if(y < currentTargetY){
+
+            y += speed;
+
+            if(y > currentTargetY){
+                y = currentTargetY;
+            }
+
+        } else if(y > currentTargetY){
+
+            y -= speed;
+
+            if(y < currentTargetY){
+                y = currentTargetY;
+            }
+        }
+
+        if(x == currentTargetX && y == currentTargetY){
+
+            movingToCell = false;
+
+        }
+    }
 
     public abstract int getScore();
 
@@ -96,6 +190,17 @@ public abstract class Chicken {
         return null;
 
     }
+
     public abstract Color getColor();
 
+    public void followCell(){
+
+        if(cell != null){
+
+            x = cell.getX();
+            y = cell.getY();
+
+        }
+
+    }
 }

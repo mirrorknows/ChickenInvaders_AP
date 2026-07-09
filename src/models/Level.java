@@ -20,6 +20,8 @@ public class Level {
     private int zigzagLives;
     private int shooterLives;
 
+    private int cellCounter;
+
     public Level(int levelNumber) {
 
         this.levelNumber = levelNumber;
@@ -37,6 +39,7 @@ public class Level {
                 zigzagLives = 0;
                 shooterLives = 0;
 
+                cellCounter = 2;
                 break;
 
             case 2:
@@ -49,6 +52,8 @@ public class Level {
                 fastLives = 1;
                 zigzagLives = 0;
                 shooterLives = 0;
+
+                cellCounter = 2;
 
                 break;
 
@@ -63,6 +68,8 @@ public class Level {
                 zigzagLives = 2;
                 shooterLives = 0;
 
+                cellCounter = 3;
+
                 break;
 
             case 5:
@@ -76,6 +83,7 @@ public class Level {
                 zigzagLives = 0;
                 shooterLives = 3;
 
+                cellCounter = 3;
                 break;
 
             case 6:
@@ -89,6 +97,8 @@ public class Level {
                 zigzagLives = 3;
                 shooterLives = 3;
 
+                cellCounter = 4;
+
                 break;
 
             case 7:
@@ -101,6 +111,8 @@ public class Level {
                 fastLives = 2;
                 zigzagLives = 3;
                 shooterLives = 3;
+
+                cellCounter = 4;
 
                 break;
         }
@@ -137,5 +149,9 @@ public class Level {
 
     public int getShooterLives() {
         return shooterLives;
+    }
+
+    public int getCellCounter() {
+        return cellCounter;
     }
 }
