@@ -30,6 +30,7 @@ public class GamePanel extends JPanel implements KeyListener {
     private ChickenManager chickenManager;
 
     private boolean gameOver = false;
+    private boolean gameWon = false;
 
     private int scores = 0;
 
@@ -54,6 +55,9 @@ public class GamePanel extends JPanel implements KeyListener {
     //boss object for boss levels
     private Boss boss;
     private boolean bossLevel = false;
+
+    //checks if current boss is final boss
+    private boolean finalBossLevel = false;
 
     //max powerups on the screen
     private final int maxPowerUpsOnScreen = 3 ;
@@ -299,41 +303,15 @@ public class GamePanel extends JPanel implements KeyListener {
 
                 if(boss.canAttack() && !isFreezeActive()){
 
-                    int centerX = boss.getX() + boss.getWidth() / 2;
-                    int centerY = boss.getY() + boss.getHeight() / 2;
+                    if(finalBossLevel){
 
-                    //up
-                    eggs.add(new Egg(
-                            centerX,
-                            centerY,
-                            0,
-                            -4
-                    ));
+                        finalBossAttack();
 
-                    //down
-                    eggs.add(new Egg(
-                            centerX,
-                            centerY,
-                            0,
-                            4
-                    ));
+                    } else {
 
-                    //left
-                    eggs.add(new Egg(
-                            centerX,
-                            centerY,
-                            -4,
-                            0
-                    ));
+                        bossLevel4Attack();
 
-                    //right
-                    eggs.add(new Egg(
-                            centerX,
-                            centerY,
-                            4,
-                            0
-                    ));
-
+                    }
                 }
                 for (int i = 0; i < bullets.size(); i++) {
 
@@ -348,8 +326,6 @@ public class GamePanel extends JPanel implements KeyListener {
 
                         if (boss.isDead()) {
 
-                            scores += 500;
-
                             //add explosion when boss dies
                             explosions.add(new Explosion(
                                     boss.getX() + boss.getWidth() / 2,
@@ -357,13 +333,28 @@ public class GamePanel extends JPanel implements KeyListener {
                                     180
                             ));
 
-                            currentLevel = 5;
+                            if(finalBossLevel){
 
-                            bossLevel = false;
-                            boss = null;
+                                scores += 1000;
+                                bossLevel = false;
+                                finalBossLevel = false;
+                                boss = null;
 
-                            startLevel();
+                                gameWon = true;
+                                gameTimer.stop();
+
+                            }else{
+
+                                scores += 500;
+                                currentLevel = 5;
+
+                                bossLevel = false;
+                                boss = null;
+
+                                startLevel();
+                            }
                         }
+
 
                         break;
                     }
@@ -420,13 +411,17 @@ public class GamePanel extends JPanel implements KeyListener {
             }
 
             //go to next level after killing all chickens
-            if (!gameOver && !bossLevel && chickenManager.getChickens().isEmpty()) {
+            if (!gameOver && !gameWon && !bossLevel && chickenManager.getChickens().isEmpty()) {
 
                 if (currentLevel == 3) {
                     scores += 200;
                     currentLevel = 4;
                     startBossLevel4();
-                } else {
+                } else if(currentLevel == 7){
+                    scores += 200;
+                    currentLevel = 8;
+                    startFinalBossLevel8();
+                }else {
                     scores += 200;
                     currentLevel++;
                     startLevel();
@@ -602,6 +597,34 @@ public class GamePanel extends JPanel implements KeyListener {
 
             g.drawString(text, x, y);
         }
+
+        //win screen
+        //win screen
+        if (gameWon) {
+
+            g.setColor(new Color(0, 0, 0, 180));
+            g.fillRect(0, 0, getWidth(), getHeight());
+
+            g.setColor(Color.GREEN);
+            g.setFont(new Font("Arial", Font.BOLD, 60));
+
+            String text = "YOU WIN";
+
+            FontMetrics fm = g.getFontMetrics();
+
+            int x = (getWidth() - fm.stringWidth(text)) / 2;
+            int y = getHeight() / 2;
+
+            g.drawString(text, x, y);
+
+            g.setFont(new Font("Arial", Font.BOLD, 25));
+
+            String scoreText = "Final Score : " + scores;
+
+            int scoreX = (getWidth() - g.getFontMetrics().stringWidth(scoreText)) / 2;
+
+            g.drawString(scoreText, scoreX, y + 50);
+        }
     }
 
     //create chicken for levels
@@ -625,7 +648,9 @@ public class GamePanel extends JPanel implements KeyListener {
 
     //start first boss level after level 3
     private void startBossLevel4() {
+
         bossLevel = true;
+        finalBossLevel = false;
 
         boss = new Boss(300, 80, 50);
 
@@ -633,6 +658,70 @@ public class GamePanel extends JPanel implements KeyListener {
         bullets.clear();
 
         lastEggDropTime = System.currentTimeMillis();
+    }
+
+    //start final boss level 8
+    private void startFinalBossLevel8(){
+
+        bossLevel = true;
+        finalBossLevel = true;
+
+        boss = new FinalBoss(300,80,100);
+
+        eggs.clear();
+        bullets.clear();
+        powerUps.clear();
+
+        lastEggDropTime = System.currentTimeMillis();
+    }
+    //boss level 4 attacks in four directions
+    private void bossLevel4Attack(){
+
+        int centerX = boss.getX() + boss.getWidth() / 2;
+        int centerY = boss.getY() + boss.getHeight() / 2;
+
+        //up
+        eggs.add(new Egg(centerX, centerY, 0, -4));
+
+        //down
+        eggs.add(new Egg(centerX, centerY, 0, 4));
+
+        //left
+        eggs.add(new Egg(centerX, centerY, -4, 0));
+
+        //right
+        eggs.add(new Egg(centerX, centerY, 4, 0));
+    }
+
+    //final boss attacks in eight directions
+    private void finalBossAttack(){
+
+        int centerX = boss.getX() + boss.getWidth() / 2;
+        int centerY = boss.getY() + boss.getHeight() / 2;
+
+        //up
+        eggs.add(new Egg(centerX, centerY, 0, -4));
+
+        //down
+        eggs.add(new Egg(centerX, centerY, 0, 4));
+
+        //left
+        eggs.add(new Egg(centerX, centerY, -4, 0));
+
+        //right
+        eggs.add(new Egg(centerX, centerY, 4, 0));
+
+        //up-left
+        eggs.add(new Egg(centerX, centerY, -3, -3));
+
+        //up-right
+        eggs.add(new Egg(centerX, centerY, 3, -3));
+
+        //down-left
+        eggs.add(new Egg(centerX, centerY, -3, 3));
+
+        //down-right
+        eggs.add(new Egg(centerX, centerY, 3, 3));
     }
 
     //choose one chicken and shoot
