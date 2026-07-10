@@ -22,8 +22,6 @@ public abstract class Chicken {
 
     protected boolean movingToCell = false;
 
-    protected int targetX;
-    protected int targetY;
 
     public Chicken(int x, int y, int width, int height, int speed, int lives){
 
@@ -63,18 +61,6 @@ public abstract class Chicken {
         return lives;
     }
 
-
-    public int getTargetX(){
-
-        return targetX;
-
-    }
-
-    public int getTargetY(){
-
-        return targetY;
-
-    }
     //setters
 
     public void setX(int x) {
@@ -115,7 +101,7 @@ public abstract class Chicken {
             return;
         }
 
-        int speed = 2;
+        int speed = 8;
 
         int currentTargetX = cell.getX();
         int currentTargetY = cell.getY();
@@ -201,6 +187,12 @@ public abstract class Chicken {
             y = cell.getY();
 
         }
+    }
+
+    //update chicken position based on cell
+    public void updatePositionFromCell(){
+
+        followCell();
 
     }
 }
