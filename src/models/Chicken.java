@@ -1,5 +1,7 @@
 package models;
 
+import java.awt.*;
+
 public abstract class Chicken {
 
     //chicken position
@@ -14,6 +16,12 @@ public abstract class Chicken {
     protected int speed ;
 
     protected int lives;
+
+    //cell for the chicken
+    protected Cell cell;
+
+    protected boolean movingToCell = false;
+
 
     public Chicken(int x, int y, int width, int height, int speed, int lives){
 
@@ -53,10 +61,6 @@ public abstract class Chicken {
         return lives;
     }
 
-    public abstract void move(int direction);
-
-    public abstract int getScore();
-
     //setters
 
     public void setX(int x) {
@@ -66,6 +70,84 @@ public abstract class Chicken {
     public void setY(int y) {
         this.y = y;
     }
+
+    public void setCell(Cell cell) {
+        this.cell = cell;
+    }
+
+    public Cell getCell(){
+
+        return cell;
+
+    }
+
+    public boolean isMovingToCell(){
+
+        return movingToCell;
+
+    }
+
+    public void startMovingToCell(){
+
+        movingToCell = true;
+
+    }
+    public abstract void move(int direction, double groupSpeed);
+
+    // move replacement chicken to its current cell
+    public void moveToCell(){
+
+        if(cell == null){
+            return;
+        }
+
+        int speed = 8;
+
+        int currentTargetX = cell.getX();
+        int currentTargetY = cell.getY();
+
+        if(x < currentTargetX){
+
+            x += speed;
+
+            if(x > currentTargetX){
+                x = currentTargetX;
+            }
+
+        } else if(x > currentTargetX){
+
+            x -= speed;
+
+            if(x < currentTargetX){
+                x = currentTargetX;
+            }
+        }
+
+        if(y < currentTargetY){
+
+            y += speed;
+
+            if(y > currentTargetY){
+                y = currentTargetY;
+            }
+
+        } else if(y > currentTargetY){
+
+            y -= speed;
+
+            if(y < currentTargetY){
+                y = currentTargetY;
+            }
+        }
+
+        if(x == currentTargetX && y == currentTargetY){
+
+            movingToCell = false;
+
+        }
+    }
+
+    public abstract int getScore();
 
     //reduce one life after getting hit
     public void takeDamage(){
@@ -88,4 +170,29 @@ public abstract class Chicken {
                 player.getY() + player.getHeight() > y;
     }
 
+    //normal zigzag and fast don't shoot horizontally
+    public Egg shootAtPlayer(Player player) {
+
+        return null;
+
+    }
+
+    public abstract Color getColor();
+
+    public void followCell(){
+
+        if(cell != null){
+
+            x = cell.getX();
+            y = cell.getY();
+
+        }
+    }
+
+    //update chicken position based on cell
+    public void updatePositionFromCell(){
+
+        followCell();
+
+    }
 }

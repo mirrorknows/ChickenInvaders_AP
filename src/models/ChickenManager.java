@@ -7,15 +7,28 @@ public class ChickenManager {
     //all chickens alive in the game
     private ArrayList<Chicken> chickens;
 
-    //q means right direction / -1 means left direction
+    //1 means right direction / -1 means left direction
     private int moveDirection  = 1;
 
     //distance that chickens move down after touching a border
     private int moveDownStep = 20;
 
-    public ChickenManager(){
+    private Level level;
 
+    private double groupSpeed;
+
+    private Cell[][] cells;
+
+    public ChickenManager(Level level){
+
+        this.level = level;
         chickens = new ArrayList<>();
+
+        moveDownStep = level.getMoveDownStep();
+
+        groupSpeed =  level.getGroupSpeed();
+
+        cells = new Cell[5][8];
 
     }
 
@@ -39,52 +52,260 @@ public class ChickenManager {
 
             for (int col = 0; col < 8; col++) {
 
-                chickens.add(new NormalChicken(x, y));
+                switch (level.getLevelNumber()) {
 
-                x += 70;
+                    case 1:
 
+                        addChickenToCell(row, col, x, y, "NORMAL");
+                        break;
+
+                    case 2:
+
+                        if (col % 2 == 0) {
+
+                            addChickenToCell(row, col, x, y, "NORMAL");
+
+                        } else {
+
+                            addChickenToCell(row, col, x, y, "FAST");
+
+                        }
+
+                        break;
+
+                    case 3:
+
+                        if (col % 2 == 0) {
+
+                            addChickenToCell(row, col, x, y, "NORMAL");
+
+                        } else {
+
+                            addChickenToCell(row, col, x, y, "ZIGZAG");
+
+                        }
+
+                        break;
+
+                    case 5:
+
+                        if (col % 2 == 0) {
+
+                            addChickenToCell(row, col, x, y, "SHOOTER");
+
+                        } else {
+
+                            addChickenToCell(row, col, x, y, "FAST");
+
+                        }
+
+                        break;
+
+                    case 6:
+
+                        if (col % 2 == 0) {
+
+                            addChickenToCell(row, col, x, y, "SHOOTER");
+
+                        } else {
+
+                            addChickenToCell(row, col, x, y, "ZIGZAG");
+                        }
+
+                        break;
+
+                    case 7:
+
+                        int randomType = (int) (Math.random() * 4);
+
+                        switch (randomType) {
+
+                            case 0:
+
+                                addChickenToCell(row, col, x, y, "NORMAL");
+                                break;
+
+                            case 1:
+
+                                addChickenToCell(row, col, x, y, "FAST");
+                                break;
+
+                            case 2:
+
+                                addChickenToCell(row, col, x, y, "ZIGZAG");
+                                break;
+
+                            case 3:
+
+                                addChickenToCell(row, col, x, y, "SHOOTER");
+                                break;
+                        }
+
+                        break;
+
+                    default:
+
+                        addChickenToCell(row, col, x, y, "NORMAL");
+                        break;
+                }
+
+                x += 45;
             }
-            //  move to the next row
-            y += 60;
 
+            y += 45;
         }
+    }
+
+    //create chicken by type
+    private Chicken createChickenByType(String type, int x, int y) {
+
+        if(type.equals("NORMAL")) {
+
+            return new NormalChicken(
+                    x,
+                    y,
+                    level.getNormalLives()
+            );
+
+        } else if(type.equals("FAST")) {
+
+            return new FastChicken(
+                    x,
+                    y,
+                    level.getFastLives()
+            );
+
+        } else if(type.equals("ZIGZAG")) {
+
+            return new ZigzagChicken(
+                    x,
+                    y,
+                    level.getZigzagLives()
+            );
+
+        } else if(type.equals("SHOOTER")) {
+
+            return new ShooterChicken(
+                    x,
+                    y,
+                    level.getShooterLives()
+            );
+        }
+
+        return new NormalChicken(
+                x,
+                y,
+                level.getNormalLives()
+        );
+    }
+
+    // create one grid cell and attach a chicken to it
+    private void addChickenToCell(
+            int row,
+            int col,
+            int x,
+            int y,
+            String type){
+
+
+        Cell cell = new Cell(
+                row,
+                col,
+                x,
+                y,
+                level.getCellCounter(),
+                type
+        );
+
+
+        cells[row][col] = cell;
+
+
+        Chicken chicken =
+                createChickenByType(type,x,y);
+
+
+        chicken.setCell(cell);
+
+
+        chickens.add(chicken);
 
     }
 
+    //move whole cell and sync chicken with cells
+    public void moveGroup(int panelWidth){
 
-    //move whole chicken group
-    public void moveGroup(int panelWidth) {
+        int dy = 0;
 
-        //if any chicken has reached the left or right border
         boolean hitBorder = false;
 
-        for (Chicken chicken : chickens) {
+        for(int row = 0; row < 5; row++){
 
-            if (chicken.getX() <= 0 ||
-                    chicken.getX() + chicken.getWidth() >= panelWidth) {
+            for(int col = 0; col < 8; col++){
 
-                hitBorder = true;
-                break;
+                Cell cell = cells[row][col];
+
+                if(cell != null && cell.hasMoreChickens()){
+
+                    int dx = getCellDx(cell);
+
+                    int nextLeft = cell.getX() + dx;
+                    int nextRight = cell.getX() + dx + 35;
+
+                    if(moveDirection < 0 && nextLeft <= 120){
+
+                        hitBorder = true;
+
+                    }
+
+                    if(moveDirection > 0 && nextRight >= panelWidth - 20){
+
+                        hitBorder = true;
+
+                    }
+                }
             }
         }
 
-        if (hitBorder) {
+        if(hitBorder){
 
-            //change direction
             moveDirection *= -1;
-
-            moveDown();
-
-        }
-
-        //move chickens in direction
-        for (Chicken chicken : chickens) {
-
-            chicken.move(moveDirection);
+            dy = moveDownStep;
 
         }
 
+        //move cells
+        for(int row = 0; row < 5; row++){
+
+            for(int col = 0; col < 8; col++){
+
+                Cell cell = cells[row][col];
+
+                if(cell != null){
+
+                    int dx = getCellDx(cell);
+
+                    cell.move(dx, dy);
+
+                }
+            }
+        }
+
+        //sync chickens with cells
+        for(Chicken chicken : chickens){
+
+            if(chicken.isMovingToCell()){
+
+                chicken.moveToCell();
+
+            } else{
+
+                chicken.updatePositionFromCell();
+
+            }
+        }
     }
+
 
     //if  any chicken reached the bottom
     public boolean reachedBottom(int panelHeight) {
@@ -100,17 +321,6 @@ public class ChickenManager {
         return false;
     }
 
-    //move all chickens down
-    public void moveDown() {
-
-        for (Chicken chicken : chickens) {
-
-            chicken.setY(chicken.getY() + moveDownStep);
-
-        }
-
-    }
-
     //last chickens (bottom chickens)
     public ArrayList<Chicken> getBottomChickens(){
 
@@ -122,9 +332,9 @@ public class ChickenManager {
 
             for (Chicken chicken : chickens) {
 
-                int chickenColumn = (chicken.getX() - 100) / 70;
-
-                if (chickenColumn == col) {
+                if(!chicken.isMovingToCell() &&
+                        chicken.getCell() != null &&
+                        chicken.getCell().getCol() == col) {
 
                     if (bottom == null || chicken.getY() > bottom.getY()) {
 
@@ -132,8 +342,8 @@ public class ChickenManager {
 
                     }
                 }
-
             }
+
             if (bottom != null) {
 
                 bottomChickens.add(bottom);
@@ -143,5 +353,56 @@ public class ChickenManager {
         return bottomChickens;
     }
 
+    //craete and replace chicken
+    public void replaceChickenIfNeeded(
+            Chicken deadChicken,
+            int panelWidth){
 
+        Cell cell = deadChicken.getCell();
+
+        if(cell == null){
+            return;
+        }
+
+        cell.decreaseCounter();
+
+        if(cell.hasMoreChickens()){
+
+            int startX;
+
+            if(Math.random() < 0.5){
+                startX = 0;
+            } else{
+                startX = panelWidth - deadChicken.getWidth();
+            }
+
+            int startY = 0;
+
+            Chicken newChicken = createChickenByType(
+                            cell.getType(),
+                            startX,
+                            startY
+                    );
+
+            newChicken.setCell(cell);
+            newChicken.startMovingToCell();
+            chickens.add(newChicken);
+
+        }
+    }
+
+
+    //return movement speed based on cell type
+    private int getCellDx(Cell cell){
+
+        int speedMultiplier = 1;
+
+        if(cell.getType().equals("FAST")){
+
+            speedMultiplier = 2;
+
+        }
+
+        return (int)(groupSpeed * speedMultiplier * moveDirection);
+    }
 }
