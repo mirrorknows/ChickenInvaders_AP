@@ -24,12 +24,15 @@ public class GamePanel extends JPanel implements KeyListener {
     private boolean leftPressed;
     private boolean rightPressed;
 
+    private boolean paused;
+
     //all bullets
     private ArrayList<Bullets> bullets;
 
     private ChickenManager chickenManager;
 
     private boolean gameOver = false;
+    private boolean gameWon = false;
 
     private int scores = 0;
 
@@ -54,6 +57,10 @@ public class GamePanel extends JPanel implements KeyListener {
 
         gameTimer = new Timer(16, e -> {
 
+            if(paused){
+                repaint();
+                return;
+            }
             if(upPressed)
                 player.moveUp();
 
@@ -306,7 +313,47 @@ public class GamePanel extends JPanel implements KeyListener {
 
             g.drawString(text, x, y);
         }
+        //pause screen
+        if(paused){
+
+            g.setColor(new Color(0, 0, 0, 160));
+            g.fillRect(0, 0, getWidth(), getHeight());
+
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Arial", Font.BOLD, 60));
+
+            String text = "PAUSED";
+            FontMetrics fm = g.getFontMetrics();
+
+            int x = (getWidth() - fm.stringWidth(text)) / 2;
+            int y = getHeight() / 2;
+
+            g.drawString(text, x, y);
+
+            g.setFont(new Font("Arial", Font.BOLD, 22));
+
+            String info = "Press P to Resume";
+            int infoX = (getWidth() - g.getFontMetrics().stringWidth(info)) / 2;
+
+            g.drawString(info, infoX, y + 45);
+        }
     }
+    //return to main menu
+    private void returnToMainMenu(){
+
+        gameTimer.stop();
+
+        Window window = SwingUtilities.getWindowAncestor(this);
+
+        new MainMenu();
+
+        if(window != null){
+
+            window.dispose();
+
+        }
+    }
+
     @Override
     public void keyTyped(KeyEvent e) {
 
@@ -316,6 +363,32 @@ public class GamePanel extends JPanel implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
+
+        //return to menu
+        if(key == KeyEvent.VK_ESCAPE){
+            returnToMainMenu();
+            return;
+        }
+        //pause
+        if(key == KeyEvent.VK_P){
+
+            if(!gameOver && !gameWon){
+
+                paused = !paused;
+
+                upPressed = false;
+                downPressed = false;
+                leftPressed = false;
+                rightPressed = false;
+
+                repaint();
+            }
+            return;
+        }
+
+        if(paused || gameOver || gameWon){
+            return;
+        }
 
         long currentTime = System.currentTimeMillis();
         switch (key){
