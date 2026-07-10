@@ -35,6 +35,20 @@ public class ZigzagChicken extends Chicken {
 
         startY = y;
     }
+
+    @Override
+    public void updatePositionFromCell(){
+
+        if(getCell() != null){
+
+            angle += 0.15;
+
+            x = getCell().getX();
+            y = getCell().getY() + (int)(moveRange * Math.sin(angle));
+
+        }
+    }
+
     @Override
     public int getScore(){
         return 20;

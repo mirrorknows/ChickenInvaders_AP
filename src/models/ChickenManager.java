@@ -7,7 +7,7 @@ public class ChickenManager {
     //all chickens alive in the game
     private ArrayList<Chicken> chickens;
 
-    //q means right direction / -1 means left direction
+    //1 means right direction / -1 means left direction
     private int moveDirection  = 1;
 
     //distance that chickens move down after touching a border
@@ -235,53 +235,57 @@ public class ChickenManager {
     //move whole cell and sync chicken with cells
     public void moveGroup(int panelWidth){
 
-        int dx = (int)(groupSpeed * moveDirection);
         int dy = 0;
 
-        int leftMost = Integer.MAX_VALUE;
-        int rightMost = Integer.MIN_VALUE;
+        boolean hitBorder = false;
 
-        for(int row=0; row<5; row++){
-            for(int col=0; col<8; col++){
+        for(int row = 0; row < 5; row++){
+
+            for(int col = 0; col < 8; col++){
 
                 Cell cell = cells[row][col];
 
                 if(cell != null && cell.hasMoreChickens()){
 
-                    leftMost = Math.min(leftMost, cell.getX());
+                    int dx = getCellDx(cell);
 
-                    rightMost = Math.max(rightMost, cell.getX()+35);
+                    int nextLeft = cell.getX() + dx;
+                    int nextRight = cell.getX() + dx + 35;
 
+                    if(moveDirection < 0 && nextLeft <= 120){
+
+                        hitBorder = true;
+
+                    }
+
+                    if(moveDirection > 0 && nextRight >= panelWidth - 20){
+
+                        hitBorder = true;
+
+                    }
                 }
             }
         }
 
-        if(moveDirection < 0 && leftMost + dx <= 120){
+        if(hitBorder){
 
-            dx = 120-leftMost;
-            moveDirection = 1;
+            moveDirection *= -1;
             dy = moveDownStep;
+
         }
-
-        else if(moveDirection > 0 && rightMost + dx >= panelWidth-20){
-
-            dx = panelWidth-20-rightMost;
-            moveDirection = -1;
-            dy = moveDownStep;
-        }
-
-
 
         //move cells
+        for(int row = 0; row < 5; row++){
 
-        for(int row=0; row<5; row++){
-            for(int col=0; col<8; col++){
+            for(int col = 0; col < 8; col++){
 
                 Cell cell = cells[row][col];
 
                 if(cell != null){
 
-                    cell.move(dx,dy);
+                    int dx = getCellDx(cell);
+
+                    cell.move(dx, dy);
 
                 }
             }
@@ -290,15 +294,16 @@ public class ChickenManager {
         //sync chickens with cells
         for(Chicken chicken : chickens){
 
-
             if(chicken.isMovingToCell()){
+
                 chicken.moveToCell();
+
             } else{
-                chicken.followCell();
+
+                chicken.updatePositionFromCell();
+
             }
-
         }
-
     }
 
 
@@ -384,5 +389,20 @@ public class ChickenManager {
             chickens.add(newChicken);
 
         }
+    }
+
+
+    //return movement speed based on cell type
+    private int getCellDx(Cell cell){
+
+        int speedMultiplier = 1;
+
+        if(cell.getType().equals("FAST")){
+
+            speedMultiplier = 2;
+
+        }
+
+        return (int)(groupSpeed * speedMultiplier * moveDirection);
     }
 }
