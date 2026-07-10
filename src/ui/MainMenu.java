@@ -83,7 +83,8 @@ public class MainMenu extends JFrame {
         //new game action listener
         newGameButton.addActionListener(e-> {
 
-            //will open game frame (coming soon)
+            new GameFrame();
+            dispose();
 
         });
 
