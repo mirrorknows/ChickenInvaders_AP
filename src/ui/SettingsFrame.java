@@ -1,5 +1,9 @@
 package ui;
 
+import models.User;
+import services.LoggedUser;
+import services.UserService;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -17,7 +21,11 @@ public class SettingsFrame extends JFrame {
 
     private JLabel titleLabel;
 
+    private UserService userService;
+
     public SettingsFrame(){
+
+        userService = new UserService();
 
         setTitle("Settings");
         setSize(550, 550);
@@ -95,6 +103,10 @@ public class SettingsFrame extends JFrame {
 
         panel.add(saveButton);
 
+        saveButton.addActionListener(e ->{
+            saveSettings();
+        });
+
         //back button
 
         backButton = new JButton("Back");
@@ -122,6 +134,8 @@ public class SettingsFrame extends JFrame {
 
         });
 
+        loadUserSettings();
+
         setLocationRelativeTo(null);
 
         setVisible(true);
@@ -135,5 +149,52 @@ public class SettingsFrame extends JFrame {
 
         checkBox.setBackground(new Color(20,20,20));
         checkBox.setFocusPainted(false);
+    }
+
+    //load current user settings
+    private void loadUserSettings(){
+
+        User user = LoggedUser.getUser();
+
+        if(user == null){
+            return;
+        }
+
+        backgroundMusicCheckBox.setSelected(user.isMusicOn());
+        shotSoundCheckBox.setSelected(user.isShotSoundOn());
+        crashSoundCheckBox.setSelected(user.isCrashSoundOn());
+        gameOverSoundCheckBox.setSelected(user.isGameOverSoundOn());
+
+    }
+
+    //save settings in database
+    private void saveSettings(){
+
+        User user = LoggedUser.getUser();
+
+        if(user == null){
+            JOptionPane.showMessageDialog(this, "No user is logged in");
+            return;
+        }
+
+
+        boolean musicOn = backgroundMusicCheckBox.isSelected();
+        boolean shotSoundOn = shotSoundCheckBox.isSelected();
+        boolean crashSoundOn = crashSoundCheckBox.isSelected();
+        boolean gameOverSoundOn = gameOverSoundCheckBox.isSelected();
+
+        userService.updateSoundSettings(
+                user.getUsername(),
+                musicOn,
+                shotSoundOn,
+                crashSoundOn,
+                gameOverSoundOn
+        );
+        user.setMusicOn(musicOn);
+        user.setShotSoundOn(shotSoundOn);
+        user.setCrashSoundOn(crashSoundOn);
+        user.setGameOverSoundOn(gameOverSoundOn);
+
+        JOptionPane.showMessageDialog(this, "Settings Saved");
     }
 }
