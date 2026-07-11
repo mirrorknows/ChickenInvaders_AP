@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import services.GameResultService;
 
 //this class manages the game panel and game loop
 
@@ -33,6 +34,9 @@ public class GamePanel extends JPanel implements KeyListener {
 
     private boolean gameOver = false;
     private boolean gameWon = false;
+    private boolean gameSaved;
+    private GameResultService gameResultService;
+
 
     private int scores = 0;
 
@@ -81,6 +85,9 @@ public class GamePanel extends JPanel implements KeyListener {
         powerUps = new ArrayList<>();
 
         explosions = new ArrayList<>();
+
+        gameResultService = new GameResultService();
+
 
         setFocusable(true);
         requestFocusInWindow();
@@ -347,6 +354,7 @@ public class GamePanel extends JPanel implements KeyListener {
                                 boss = null;
 
                                 gameWon = true;
+                                saveGameResult();
                                 gameTimer.stop();
 
                             }else{
@@ -376,6 +384,7 @@ public class GamePanel extends JPanel implements KeyListener {
 
                         if(player.getLives() <= 0){
                             gameOver = true;
+                            saveGameResult();
                             gameTimer.stop();
                         }
                     }
@@ -407,6 +416,7 @@ public class GamePanel extends JPanel implements KeyListener {
 
                             if(player.getLives() <= 0) {
                                 gameOver = true;
+                                saveGameResult();
                                 gameTimer.stop();
                             }
 
@@ -437,7 +447,7 @@ public class GamePanel extends JPanel implements KeyListener {
             if (!bossLevel && chickenManager.reachedBottom(getHeight())) {
 
                 gameOver = true;
-
+                saveGameResult();
                 gameTimer.stop();
 
                 repaint();
@@ -809,6 +819,17 @@ public class GamePanel extends JPanel implements KeyListener {
             window.dispose();
 
         }
+    }
+
+    private void saveGameResult(){
+
+        if(gameSaved){
+            return;
+        }
+
+        gameResultService.saveGameResult(currentLevel,scores);
+
+        gameSaved = true;
     }
 
     @Override
