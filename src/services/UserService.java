@@ -125,4 +125,24 @@ public class UserService {
         }
     }
 
+    //update sound settings
+    public void updateSoundSettings(String username, boolean musicOn, boolean shotSoundOn,
+                                    boolean crashSoundOn, boolean gameOverSoundOn){
+        String sql = "UPDATE users SET music_on = ?, shot_sound_on = ?, " +
+                "crash_sound_on = ? , gameover_sound_on = ? WHERE username = ?";
+        try(Connection connection = databaseManager.getConnection();
+        PreparedStatement statement = connection.prepareStatement(sql)){
+
+            statement.setBoolean(1, musicOn);
+            statement.setBoolean(2, shotSoundOn);
+            statement.setBoolean(3, crashSoundOn);
+            statement.setBoolean(4, gameOverSoundOn);
+            statement.setString(5,username);
+
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
