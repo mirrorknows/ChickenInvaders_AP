@@ -2,10 +2,13 @@ package services;
 
 import database.DatabaseManager;
 import models.GameHistory;
+import models.HighScore;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 
 public class GameHistoryService {
@@ -48,6 +51,40 @@ public class GameHistoryService {
         return false;
     }
 
+    //get high scores from game history
+    public ArrayList<HighScore> getHighScores(){
+
+        ArrayList<HighScore> highScores = new ArrayList<>();
+
+        String sql = "SELECT users.username, MAX(game_history.score) AS high_score " +
+                "FROM game_history " +
+                "JOIN users ON users.id = game_history.user_id " +
+                "GROUP BY users.username " +
+                "ORDER BY high_score DESC " +
+                "LIMIT 10";
+
+        try(Connection connection = databaseManager.getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet resultSet = statement.executeQuery()){
+
+            while(resultSet.next()){
+
+                HighScore highScore = new HighScore(
+                        resultSet.getString("username"),
+                        resultSet.getInt("high_score")
+                );
+
+                highScores.add(highScore);
+            }
+
+        } catch(SQLException e){
+
+            e.printStackTrace();
+
+        }
+
+        return highScores;
+    }
 }
 
 

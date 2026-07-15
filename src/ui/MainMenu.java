@@ -105,7 +105,8 @@ public class MainMenu extends JFrame {
         //high scores action listener
         highScoreButton.addActionListener(e->{
 
-            //will open high score frame (coming soon)
+            new HighScoreFrame();
+            dispose();
 
         });
 
