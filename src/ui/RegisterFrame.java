@@ -34,92 +34,144 @@ public class RegisterFrame extends JFrame {
 
     public RegisterFrame(){
         setTitle("Register");
-        setSize(550,550);
+        setSize(800,600);
+        setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         userService = new UserService();
 
-        panel = new JPanel();
-        panel.setBackground(new Color(20,20,20));
+        // Load background image from resources
+        ImageIcon backgroundIcon =
+                new ImageIcon(getClass().getResource("/images/backgrounds/login_bg.png"));
+
+        Image backgroundImage = backgroundIcon.getImage();
+
+        panel = new JPanel() {
+
+            //draw the image as the panel background
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+
+                g.drawImage(
+                        backgroundImage,
+                        0,
+                        0,
+                        getWidth(),
+                        getHeight(),
+                        this
+                );
+            }
+        };
 
         add(panel);
 
-        panel.setBorder(BorderFactory.createEmptyBorder(30, 60, 30, 60));
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.add(Box.createVerticalGlue());
 
-
-        GridLayout layout = new GridLayout();
-        layout.setRows(10);
-        layout.setColumns(1);
-        layout.setHgap(10);
-        layout.setVgap(10);
-
-        panel.setLayout(layout);
 
         //welcome
         welcomeLabel = new JLabel("CREATE ACCOUNT");
 
-        welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         welcomeLabel.setFont(new Font("Verdana", Font.BOLD, 40));
-        welcomeLabel.setForeground(new Color(255,215,0));
+        welcomeLabel.setForeground(new Color(207, 255, 4));
+        welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         panel.add(welcomeLabel);
+        panel.add(Box.createVerticalStrut(8));
 
         //info label : enter info
         infoLabel = new JLabel("Please Enter Your Information");
-        infoLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         infoLabel.setForeground(Color.WHITE);
         infoLabel.setFont(new Font("Trebuchet MS", Font.BOLD, 27));
+        infoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         panel.add(infoLabel);
+        panel.add(Box.createVerticalStrut(20));
 
         //username
         usernameLabel = new JLabel("Username:");
+
+        usernameLabel.setPreferredSize(new Dimension(320, 25));
+        usernameLabel.setMaximumSize(new Dimension(320, 25));
+        usernameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         usernameLabel.setForeground(Color.WHITE);
         usernameLabel.setFont(new Font("Consolas", Font.PLAIN, 20));
 
         panel.add(usernameLabel);
+        panel.add(Box.createVerticalStrut(5));
 
         usernameField = new JTextField();
 
+        usernameField.setPreferredSize(new Dimension(320, 40));
+        usernameField.setMaximumSize(new Dimension(320, 40));
+        usernameField.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        usernameField.setFont(new Font("Consolas", Font.PLAIN, 18));
         usernameField.setBackground(new Color(40,40,40));
         usernameField.setForeground(Color.WHITE);
         usernameField.setCaretColor(Color.WHITE);
 
         panel.add(usernameField);
+        panel.add(Box.createVerticalStrut(12));
 
         //password
         passwordLabel = new JLabel("Password:");
+
+        passwordLabel.setPreferredSize(new Dimension(320, 25));
+        passwordLabel.setMaximumSize(new Dimension(320, 25));
+        passwordLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         passwordLabel.setForeground(Color.WHITE);
         passwordLabel.setFont(new Font("Consolas", Font.PLAIN, 20));
 
         panel.add(passwordLabel);
+        panel.add(Box.createVerticalStrut(5));
 
         //password field
         passwordField = new JPasswordField();
 
+        passwordField.setPreferredSize(new Dimension(320, 40));
+        passwordField.setMaximumSize(new Dimension(320, 40));
+        passwordField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        passwordField.setFont(new Font("Consolas", Font.PLAIN, 18));
+
         passwordField.setBackground(new Color(40,40,40));
         passwordField.setForeground(Color.WHITE);
+        passwordField.setCaretColor(Color.WHITE);
 
         panel.add(passwordField);
+        panel.add(Box.createVerticalStrut(12));
 
-        //confirm password
+        // confirm password
         confirmPasswordLabel = new JLabel("Confirm Password:");
+
+        confirmPasswordLabel.setPreferredSize(new Dimension(320, 25));
+        confirmPasswordLabel.setMaximumSize(new Dimension(320, 25));
+        confirmPasswordLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         confirmPasswordLabel.setForeground(Color.WHITE);
         confirmPasswordLabel.setFont(new Font("Consolas", Font.PLAIN, 20));
 
         panel.add(confirmPasswordLabel);
+        panel.add(Box.createVerticalStrut(5));
 
         //confirm password field
         confirmPasswordField = new JPasswordField();
 
+        confirmPasswordField.setPreferredSize(new Dimension(320, 40));
+        confirmPasswordField.setMaximumSize(new Dimension(320, 40));
+        confirmPasswordField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        confirmPasswordField.setFont(new Font("Consolas", Font.PLAIN, 18));
+
         confirmPasswordField.setBackground(new Color(40,40,40));
         confirmPasswordField.setForeground(Color.WHITE);
+        confirmPasswordField.setCaretColor(Color.WHITE);
 
         panel.add(confirmPasswordField);
+        panel.add(Box.createVerticalStrut(25));
 
         //register button
         registerButton = new JButton("Register");
@@ -127,10 +179,11 @@ public class RegisterFrame extends JFrame {
         buttonStyle(registerButton);
 
         panel.add(registerButton);
+        panel.add(Box.createVerticalStrut(15));
 
         registerButton.addActionListener(e ->{
 
-            String username = usernameField.getText();
+            String username = usernameField.getText().trim();
 
             String password = new String(passwordField.getPassword());
 
@@ -151,6 +204,7 @@ public class RegisterFrame extends JFrame {
                 return;
             }
 
+            //create a new user with default game settings
             User user = new User(username, password,
                     0,0,1,
                     true,true,
@@ -176,6 +230,7 @@ public class RegisterFrame extends JFrame {
         buttonStyle(backButton);
 
         panel.add(backButton);
+        panel.add(Box.createVerticalGlue());
 
         backButton.addActionListener(e ->{
 
@@ -196,11 +251,16 @@ public class RegisterFrame extends JFrame {
         button.setForeground(Color.WHITE);
         button.setBackground(new Color(40,40,40));
 
+        button.setPreferredSize(new Dimension(220, 45));
+        button.setMaximumSize(new Dimension(220, 45));
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+
         button.setFocusPainted(false);
 
         button.setBorder(
                 BorderFactory.createLineBorder(
-                        new Color(207,255,4),
+                        new Color(255,215,0),
                         2
                 )
         );
