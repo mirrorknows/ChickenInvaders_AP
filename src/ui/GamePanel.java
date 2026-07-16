@@ -34,7 +34,7 @@ public class GamePanel extends JPanel implements KeyListener {
 
     private boolean gameOver = false;
     private boolean gameWon = false;
-    private boolean gameSaved;
+    private boolean gameSaved = false;
     private GameResultService gameResultService;
 
 
@@ -827,9 +827,11 @@ public class GamePanel extends JPanel implements KeyListener {
             return;
         }
 
-        gameResultService.saveGameResult(currentLevel,scores);
+        boolean saved = gameResultService.saveGameResult(currentLevel, scores);
 
-        gameSaved = true;
+        if(saved){
+            gameSaved = true;
+        }
     }
 
     @Override
@@ -844,6 +846,11 @@ public class GamePanel extends JPanel implements KeyListener {
 
         //return to menu
         if(key == KeyEvent.VK_ESCAPE){
+
+            if(!gameSaved){
+                saveGameResult();
+            }
+
             returnToMainMenu();
             return;
         }

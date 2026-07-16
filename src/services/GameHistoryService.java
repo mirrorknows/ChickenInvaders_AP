@@ -56,11 +56,16 @@ public class GameHistoryService {
 
         ArrayList<HighScore> highScores = new ArrayList<>();
 
-        String sql = "SELECT users.username, MAX(game_history.score) AS high_score " +
+        String sql = "SELECT users.username, game_history.score, game_history.level, game_history.played_time " +
                 "FROM game_history " +
                 "JOIN users ON users.id = game_history.user_id " +
-                "GROUP BY users.username " +
-                "ORDER BY high_score DESC " +
+                "WHERE game_history.id = (" +
+                "SELECT history2.id FROM game_history history2 " +
+                "WHERE history2.user_id = game_history.user_id " +
+                "ORDER BY history2.score DESC, history2.played_time DESC " +
+                "LIMIT 1" +
+                ") " +
+                "ORDER BY game_history.score DESC " +
                 "LIMIT 10";
 
         try(Connection connection = databaseManager.getConnection();
@@ -71,7 +76,9 @@ public class GameHistoryService {
 
                 HighScore highScore = new HighScore(
                         resultSet.getString("username"),
-                        resultSet.getInt("high_score")
+                        resultSet.getInt("score"),
+                        resultSet.getInt("level"),
+                        resultSet.getString("played_time")
                 );
 
                 highScores.add(highScore);
