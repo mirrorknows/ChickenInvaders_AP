@@ -4,6 +4,7 @@ import services.LoggedUser;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
 
 //main menu of the game
 // including : new game, high scores,
@@ -27,43 +28,67 @@ public class MainMenu extends JFrame {
 
     public MainMenu(){
         setTitle("Main Menu");
-        setSize(550,550);
+        setSize(800,600);
+        setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        panel = new JPanel();
-        panel.setBackground(new Color(20,20,20));
+        // Load background image from resources
+        URL backgroundUrl = getClass().getResource(
+                        "/images/backgrounds/mainMenu_bg.png");
+
+        if(backgroundUrl == null) {
+            throw new IllegalStateException("background image not found");
+        }
+        ImageIcon backgroundIcon = new ImageIcon(backgroundUrl);
+        Image backgroundImage = backgroundIcon.getImage();
+
+        // Draw the image as the panel background
+        panel = new JPanel() {
+
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+
+                g.drawImage(
+                        backgroundImage,
+                        0,
+                        0,
+                        getWidth(),
+                        getHeight(),
+                        this
+                );
+            }
+        };
+
         add(panel);
 
-        panel.setBorder(
-                BorderFactory.createEmptyBorder(30,70,30,70)
+        panel.setLayout(
+                new BoxLayout(panel, BoxLayout.Y_AXIS)
         );
 
-        GridLayout layout = new GridLayout();
-        layout.setRows(7);
-        layout.setColumns(1);
-        layout.setHgap(10);
-        layout.setVgap(15);
-
-        panel.setLayout(layout);
+        panel.add(Box.createVerticalStrut(70));
 
         // Game title
         titleLabel = new JLabel("CHICKEN INVADERS");
-        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Verdana", Font.BOLD, 33));
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        titleLabel.setFont(new Font("Verdana", Font.BOLD, 40));
         titleLabel.setForeground(new Color(255,210,60));
 
         panel.add(titleLabel);
+        panel.add(Box.createVerticalStrut(10));
 
         //welcome
         welcomeLabel = new JLabel("WELCOME, " +
                 LoggedUser.getUser().getUsername() + "!");
 
 
-        welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         welcomeLabel.setFont(new Font("Georgia", Font.PLAIN, 25));
         welcomeLabel.setForeground(Color.WHITE);
 
         panel.add(welcomeLabel);
+        panel.add(Box.createVerticalStrut(30));
 
         //buttons :
         //new game button
@@ -71,14 +96,8 @@ public class MainMenu extends JFrame {
 
         buttonStyle(newGameButton);
 
-        newGameButton.setBorder(
-                BorderFactory.createLineBorder(
-                        new Color(207, 255, 4),
-                        2
-                )
-        );
-
         panel.add(newGameButton);
+        panel.add(Box.createVerticalStrut(12));
 
         //new game action listener
         newGameButton.addActionListener(e-> {
@@ -93,14 +112,9 @@ public class MainMenu extends JFrame {
 
         buttonStyle(highScoreButton);
 
-        highScoreButton.setBorder(
-                BorderFactory.createLineBorder(
-                        new Color(207, 255, 4),
-                        2
-                )
-        );
 
         panel.add(highScoreButton);
+        panel.add(Box.createVerticalStrut(12));
 
         //high scores action listener
         highScoreButton.addActionListener(e->{
@@ -115,14 +129,9 @@ public class MainMenu extends JFrame {
 
         buttonStyle(settingsButton);
 
-        settingsButton.setBorder(
-                BorderFactory.createLineBorder(
-                        new Color(207, 255, 4),
-                        2
-                )
-        );
 
         panel.add(settingsButton);
+        panel.add(Box.createVerticalStrut(12));
 
         //setting action listener
         settingsButton.addActionListener(e->{
@@ -137,14 +146,8 @@ public class MainMenu extends JFrame {
         howToPlayButton = new JButton("How To Play");
         buttonStyle(howToPlayButton);
 
-        howToPlayButton.setBorder(
-                BorderFactory.createLineBorder(
-                        new Color(207, 255, 4),
-                        2
-                )
-        );
-
         panel.add(howToPlayButton);
+        panel.add(Box.createVerticalStrut(12));
 
         //how to play action listener
         howToPlayButton.addActionListener(e ->{
@@ -165,6 +168,7 @@ public class MainMenu extends JFrame {
         );
 
         panel.add(exitButton);
+        panel.add(Box.createVerticalGlue());
 
         //exit action listener
         exitButton.addActionListener(e->{
@@ -189,7 +193,17 @@ public class MainMenu extends JFrame {
         button.setForeground(Color.WHITE);
         button.setBackground(new Color(40, 40, 40));
 
+        button.setPreferredSize(new Dimension(240, 45));
+        button.setMaximumSize(new Dimension(240, 45));
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         button.setFocusPainted(false);
+
+        button.setBorder(BorderFactory.createLineBorder(
+                        new Color(207, 255, 4),
+                        2
+                )
+        );
 
     }
 }
