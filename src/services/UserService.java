@@ -125,24 +125,58 @@ public class UserService {
         }
     }
 
-    //update sound settings
-    public void updateSoundSettings(String username, boolean musicOn, boolean shotSoundOn,
-                                    boolean crashSoundOn, boolean gameOverSoundOn){
-        String sql = "UPDATE users SET music_on = ?, shot_sound_on = ?, " +
-                "crash_sound_on = ? , gameover_sound_on = ? WHERE username = ?";
+    //update last level
+    public void updateLastLevel(String username, int lastLevel){
+
+        String sql = "UPDATE users SET last_level = ? WHERE username = ?";
+
         try(Connection connection = databaseManager.getConnection();
-        PreparedStatement statement = connection.prepareStatement(sql)){
+            PreparedStatement statement = connection.prepareStatement(sql)){
+
+            statement.setInt(1, lastLevel);
+            statement.setString(2, username);
+
+            statement.executeUpdate();
+
+        } catch(SQLException e){
+
+            e.printStackTrace();
+
+        }
+    }
+
+    //update sound settings
+    public boolean updateSoundSettings(
+            String username,
+            boolean musicOn,
+            boolean shotSoundOn,
+            boolean crashSoundOn,
+            boolean gameOverSoundOn
+    ){
+
+        String sql = "UPDATE users SET music_on = ?, shot_sound_on = ?, " +
+                "crash_sound_on = ?, gameover_sound_on = ? " +
+                "WHERE username = ?";
+
+        try(Connection connection = databaseManager.getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql)){
 
             statement.setBoolean(1, musicOn);
             statement.setBoolean(2, shotSoundOn);
             statement.setBoolean(3, crashSoundOn);
             statement.setBoolean(4, gameOverSoundOn);
-            statement.setString(5,username);
+            statement.setString(5, username);
 
-            statement.executeUpdate();
-        } catch (SQLException e) {
+            int rows = statement.executeUpdate();
+
+            return rows > 0;
+
+        } catch(SQLException e){
+
             e.printStackTrace();
         }
+
+        return false;
     }
 
 }

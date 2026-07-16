@@ -17,12 +17,12 @@ public class GameResultService {
     }
 
     //save history and update high score
-    public void saveGameResult(int level, int score){
+    public boolean saveGameResult(int level, int score){
 
         User user = LoggedUser.getUser();
 
         if(user == null){
-            return;
+            return false;
         }
 
         GameHistory gameHistory = new GameHistory(
@@ -37,11 +37,26 @@ public class GameResultService {
                 user.isGameOverSoundOn()
         );
 
-        gameHistoryService.saveGame(gameHistory);
+        boolean saved = gameHistoryService.saveGame(gameHistory);
+
+        if(!saved){
+            return false;
+        }
+
+        userService.updateLastLevel(user.getUsername(), level);
+
+        user.setLastLevel(level);
 
         if(score > user.getHighScore()){
 
-            userService.updateHighScore(user.getUsername(), score);
+            userService.updateHighScore(
+                    user.getUsername(),
+                    score
+            );
+
+            user.setHighScore(score);
         }
+
+        return true;
     }
 }

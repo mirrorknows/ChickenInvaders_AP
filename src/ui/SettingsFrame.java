@@ -184,28 +184,54 @@ public class SettingsFrame extends JFrame {
         User user = LoggedUser.getUser();
 
         if(user == null){
-            JOptionPane.showMessageDialog(this, "No user is logged in");
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No user is logged in"
+            );
+
             return;
         }
 
+        boolean musicOn =
+                backgroundMusicCheckBox.isSelected();
 
-        boolean musicOn = backgroundMusicCheckBox.isSelected();
-        boolean shotSoundOn = shotSoundCheckBox.isSelected();
-        boolean crashSoundOn = crashSoundCheckBox.isSelected();
-        boolean gameOverSoundOn = gameOverSoundCheckBox.isSelected();
+        boolean shotSoundOn =
+                shotSoundCheckBox.isSelected();
 
-        userService.updateSoundSettings(
+        boolean crashSoundOn =
+                crashSoundCheckBox.isSelected();
+
+        boolean gameOverSoundOn =
+                gameOverSoundCheckBox.isSelected();
+
+        boolean saved = userService.updateSoundSettings(
                 user.getUsername(),
                 musicOn,
                 shotSoundOn,
                 crashSoundOn,
                 gameOverSoundOn
         );
-        user.setMusicOn(musicOn);
-        user.setShotSoundOn(shotSoundOn);
-        user.setCrashSoundOn(crashSoundOn);
-        user.setGameOverSoundOn(gameOverSoundOn);
 
-        JOptionPane.showMessageDialog(this, "Settings Saved");
+        if(saved){
+
+            //update current user in memory
+            user.setMusicOn(musicOn);
+            user.setShotSoundOn(shotSoundOn);
+            user.setCrashSoundOn(crashSoundOn);
+            user.setGameOverSoundOn(gameOverSoundOn);
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Settings Saved"
+            );
+
+        } else {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Settings could not be saved"
+            );
+        }
     }
 }
