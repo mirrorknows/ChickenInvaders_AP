@@ -1,5 +1,7 @@
 package models;
 
+import helpers.ImageLoader;
+
 import java.awt.*;
 
 //this class draws a simple explosion effect
@@ -12,7 +14,14 @@ public class Explosion {
 
     private long startTime;
 
-    private final long duration = 500;
+    private final long duration = 250;
+
+    //explosion image
+    //shared explosion image
+    private static final Image image =
+            ImageLoader.loadImage(
+                    "/images/planes/Explosion.png"
+            );
 
     public Explosion(int x, int y, int maxSize) {
 
@@ -38,7 +47,8 @@ public class Explosion {
 
         long passedTime = currentTime - startTime;
 
-        double progress = passedTime / (double) duration;
+        double progress =
+                passedTime / (double) duration;
 
         int size = (int)(maxSize * progress);
 
@@ -46,28 +56,17 @@ public class Explosion {
             size = 20;
         }
 
-        g.setColor(Color.ORANGE);
-        g.fillOval(
+        if(size > maxSize) {
+            size = maxSize;
+        }
+
+        g.drawImage(
+                image,
                 x - size / 2,
                 y - size / 2,
                 size,
-                size
-        );
-
-        g.setColor(Color.YELLOW);
-        g.fillOval(
-                x - size / 4,
-                y - size / 4,
-                size / 2,
-                size / 2
-        );
-
-        g.setColor(Color.RED);
-        g.drawOval(
-                x - size / 2,
-                y - size / 2,
                 size,
-                size
+                null
         );
     }
 }

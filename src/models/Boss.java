@@ -1,5 +1,7 @@
 package models;
 
+import helpers.ImageLoader;
+
 import java.awt.*;
 //this class creates boss enemy for boss levels
 
@@ -30,7 +32,10 @@ public class Boss {
     private long lastAttackTime = 0;
     private final long attackDelay = 1500;
 
+    protected Image image;
+
     public Boss(int x, int y, int lives) {
+
         this.x = x;
         this.y = y;
 
@@ -41,6 +46,10 @@ public class Boss {
         this.maxLives = lives;
 
         this.startY = y;
+
+        image = ImageLoader.loadImage(
+                "/images/enemies/boss1.png"
+        );
     }
 
     //move boss left and right
@@ -78,14 +87,21 @@ public class Boss {
     }
 
     public void draw(Graphics g) {
-        g.setColor(Color.ORANGE);
-        g.fillOval(x, y, width, height);
+
+        g.drawImage(
+                image,
+                x,
+                y,
+                width,
+                height,
+                null
+        );
 
         drawHealthBar(g);
     }
 
     private void drawHealthBar(Graphics g) {
-        int barWidth = 250;
+        int barWidth = width;
         int barHeight = 15;
 
         int barX = x;

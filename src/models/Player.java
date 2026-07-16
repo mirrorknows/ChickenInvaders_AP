@@ -1,14 +1,24 @@
 package models;
+
+import helpers.ImageLoader;
+
+import javax.swing.*;
+import java.awt.*;
+import java.net.URL;
+
 //this class is player (spaceship)
 public class Player {
+
+    //player image
+    private Image image;
 
     //player position
     private int x;
     private int y;
 
     //player size
-    private final int width = 60;
-    private final int height = 60;
+    private final int width = 75;
+    private final int height = 75;
 
     //player speed
     private int speed = 5;
@@ -47,57 +57,24 @@ public class Player {
         this.x = x;
         this.y = y;
 
+        image = ImageLoader.loadImage(
+                "/images/planes/6.png"
+        );
+
         lastShotTime = 0;
     }
 
-    //getters
-    public int getX() {
-        return x;
-    }
+    //draw player
+    public void draw(Graphics g){
 
-    public int getY() {
-        return y;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public int getSpeed() {
-        return speed;
-    }
-
-    public int getLives() {
-        return lives;
-    }
-
-    public int getMaxLives() {
-        return maxLives;
-    }
-
-    public int getFireCount() {
-        return fireCount;
-    }
-
-    public int getMaxFireCount() {
-        return maxFireCount;
-    }
-
-    public int getShootDelay() {
-        return shootDelay;
-    }
-
-    public long getLastShotTime() {
-        return lastShotTime;
-    }
-
-    //setters
-    public void setLastShotTime(long lastShotTime) {
-        this.lastShotTime = lastShotTime;
+        g.drawImage(
+                image,
+                x,
+                y,
+                width,
+                height,
+                null
+        );
     }
 
     //moves player to the right
@@ -222,4 +199,54 @@ public class Player {
 
         return shieldActive;
     }
+    //getters
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public int getLives() {
+        return lives;
+    }
+
+    public int getMaxLives() {
+        return maxLives;
+    }
+
+    public int getFireCount() {
+        return fireCount;
+    }
+
+    public int getMaxFireCount() {
+        return maxFireCount;
+    }
+
+    public int getShootDelay() {
+        return shootDelay;
+    }
+
+    public long getLastShotTime() {
+        return lastShotTime;
+    }
+
+    //setters
+    public void setLastShotTime(long lastShotTime) {
+        this.lastShotTime = lastShotTime;
+    }
+
 }

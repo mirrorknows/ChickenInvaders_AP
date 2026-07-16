@@ -14,7 +14,15 @@ public class ZigzagChicken extends Chicken {
 
     public ZigzagChicken(int x, int y, int lives) {
 
-        super(x, y, 35, 35, 1, lives);
+        super(
+                x,
+                y,
+                35,
+                35,
+                1,
+                lives,
+                "/images/enemies/zigzag_chicken.png"
+        );
         startY = y;
     }
 
@@ -54,8 +62,4 @@ public class ZigzagChicken extends Chicken {
         return 20;
     }
 
-    @Override
-    public Color getColor(){
-        return Color.MAGENTA;
-    }
 }

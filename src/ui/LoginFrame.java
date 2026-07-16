@@ -44,7 +44,7 @@ public class LoginFrame extends JFrame {
 
         // Load background image from resources
         ImageIcon backgroundIcon =
-                new ImageIcon(getClass().getResource("/images/backgrounds/login_bg.png"));
+                new ImageIcon(getClass().getResource("/images/backgrounds/login_background2.png"));
 
         Image backgroundImage = backgroundIcon.getImage();
 

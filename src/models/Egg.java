@@ -1,5 +1,9 @@
 package models;
 
+import helpers.ImageLoader;
+
+import java.awt.*;
+
 public class Egg {
 
     private int x;
@@ -9,22 +13,17 @@ public class Egg {
     private int dx;
     private int dy;
 
-    private final int width = 8;
-    private final int height = 12;
+    private final int width = 14;
+    private final int height = 18;
 
-    private final int speed = 4;
+
+    //egg image
+    private static final Image image = ImageLoader.loadImage("/images/enemies/egg.png");
 
     public Egg(int x, int y) {
 
-        this.x = x;
-        this.y = y;
-
-        //direction: down
-        this.dx = 0;
-        this.dy = speed;
-
+        this(x, y, 0, 4);
     }
-
 
     //boss egg with direction
     public Egg(int x, int y, int dx, int dy) {
@@ -37,11 +36,22 @@ public class Egg {
 
     }
 
-
-
     public void drop(){
         x += dx;
         y += dy;
+    }
+
+    //draw egg
+    public void draw(Graphics g){
+
+        g.drawImage(
+                image,
+                x,
+                y,
+                width,
+                height,
+                null
+        );
     }
 
     public int getX() {

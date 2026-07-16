@@ -1,4 +1,9 @@
 package models;
+
+import helpers.ImageLoader;
+
+import java.awt.*;
+
 //this class creates bullets
 public class Bullets {
 
@@ -10,14 +15,31 @@ public class Bullets {
     private final int speed = 8 ;
 
     //bullet size
-    private final int width = 5;
-    private final int height = 15;
+    private final int width = 18;
+    private final int height = 36;
 
-    public Bullets(int x , int y){
+    //bullet image
+    private static final Image image =
+            ImageLoader.loadImage("/images/planes/shot.png");
 
-        this.x = x;
-        this.y = y;
+    public Bullets(int centerX, int playerY){
 
+        this.x = centerX - width / 2;
+        this.y = playerY - height;
+
+    }
+
+    //draw bullet
+    public void draw(Graphics g){
+
+        g.drawImage(
+                image,
+                x,
+                y,
+                width,
+                height,
+                null
+        );
     }
 
     //getters

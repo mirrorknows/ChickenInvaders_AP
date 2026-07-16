@@ -1,5 +1,7 @@
 package models;
 
+import helpers.ImageLoader;
+
 import java.awt.*;
 
 public abstract class Chicken {
@@ -21,9 +23,18 @@ public abstract class Chicken {
     protected Cell cell;
 
     protected boolean movingToCell = false;
+    //chicken image
+    protected Image image;
 
-
-    public Chicken(int x, int y, int width, int height, int speed, int lives){
+    public Chicken(
+            int x,
+            int y,
+            int width,
+            int height,
+            int speed,
+            int lives,
+            String imagePath
+    ){
 
         this.x = x;
         this.y = y;
@@ -32,44 +43,24 @@ public abstract class Chicken {
         this.height = height;
 
         this.speed = speed;
-
         this.lives = lives;
+
+        this.image = ImageLoader.loadImage(imagePath);
     }
 
-    //getters
-    public int getX() {
-        return x;
+    //draw chicken
+    public void draw(Graphics g){
+
+        g.drawImage(
+                image,
+                x,
+                y,
+                width,
+                height,
+                null
+        );
     }
 
-    public int getY() {
-        return y;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public int getSpeed() {
-        return speed;
-    }
-
-    public int getLives(){
-        return lives;
-    }
-
-    //setters
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
 
     public void setCell(Cell cell) {
         this.cell = cell;
@@ -177,7 +168,6 @@ public abstract class Chicken {
 
     }
 
-    public abstract Color getColor();
 
     public void followCell(){
 
@@ -194,5 +184,40 @@ public abstract class Chicken {
 
         followCell();
 
+    }
+
+    //getters
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public int getLives(){
+        return lives;
+    }
+
+    //setters
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 }

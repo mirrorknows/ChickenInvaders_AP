@@ -6,7 +6,12 @@ import java.awt.*;
 public class NormalChicken extends Chicken{
 
     public NormalChicken(int x, int y, int lives){
-        super(x,y,35,35,1, lives);
+        super(
+                 x, y,
+                35, 35,
+                1,
+                lives, "/images/enemies/normal_chicken.png"
+        );
     }
 
     //group move in direction (right or left)
@@ -23,8 +28,4 @@ public class NormalChicken extends Chicken{
         return 10;
     }
 
-    @Override
-    public Color getColor(){
-        return Color.CYAN;
-    }
 }

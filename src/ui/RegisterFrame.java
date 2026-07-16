@@ -42,7 +42,7 @@ public class RegisterFrame extends JFrame {
 
         // Load background image from resources
         ImageIcon backgroundIcon =
-                new ImageIcon(getClass().getResource("/images/backgrounds/login_bg.png"));
+                new ImageIcon(getClass().getResource("/images/backgrounds/login_background2.png"));
 
         Image backgroundImage = backgroundIcon.getImage();
 
@@ -74,7 +74,7 @@ public class RegisterFrame extends JFrame {
         welcomeLabel = new JLabel("CREATE ACCOUNT");
 
         welcomeLabel.setFont(new Font("Verdana", Font.BOLD, 40));
-        welcomeLabel.setForeground(new Color(207, 255, 4));
+        welcomeLabel.setForeground(new Color(255,215,0));
         welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         panel.add(welcomeLabel);

@@ -1,12 +1,16 @@
 package models;
 
-import java.awt.*;
 
 public class FastChicken extends Chicken {
 
     public FastChicken(int x, int y, int lives) {
 
-        super(x, y, 35, 35, 2, lives);
+        super(
+                x, y,
+                35, 35,
+                2,
+                lives, "/images/enemies/fast_chicken.png"
+        );
 
     }
 
@@ -21,8 +25,4 @@ public class FastChicken extends Chicken {
         return 15;
     }
 
-    @Override
-    public Color getColor(){
-        return Color.BLUE;
-    }
 }
