@@ -6,7 +6,12 @@ public class ShooterChicken extends Chicken {
 
     public ShooterChicken(int x, int y, int lives) {
 
-        super(x, y, 35, 35, 1, lives);
+        super(
+                x,
+                y,
+                35, 35, 1,
+                lives, "/images/enemies/shooter_chicken.png"
+        );
 
     }
     @Override
@@ -46,8 +51,4 @@ public class ShooterChicken extends Chicken {
         return 25;
     }
 
-    @Override
-    public Color getColor() {
-        return Color.WHITE;
-    }
 }

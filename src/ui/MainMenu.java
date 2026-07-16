@@ -34,7 +34,7 @@ public class MainMenu extends JFrame {
 
         // Load background image from resources
         URL backgroundUrl = getClass().getResource(
-                        "/images/backgrounds/mainMenu_bg.png");
+                        "/images/backgrounds/login_background.png");
 
         if(backgroundUrl == null) {
             throw new IllegalStateException("background image not found");

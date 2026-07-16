@@ -1,5 +1,6 @@
 package ui;
 
+import helpers.ImageLoader;
 import models.*;
 
 import javax.swing.*;
@@ -72,8 +73,14 @@ public class GamePanel extends JPanel implements KeyListener {
     private boolean freezeActive = false;
     private long freezeEndTime = 0;
 
+    //game background
+    private Image backgroundImage;
+
     public GamePanel(){
 
+        backgroundImage = ImageLoader.loadImage(
+                "/images/backgrounds/main_gameBG.png"
+        );
         setBackground(Color.BLACK);
 
         player = new Player(400,500);
@@ -379,7 +386,7 @@ public class GamePanel extends JPanel implements KeyListener {
             for(Chicken chicken : chickenManager.getChickens()){
                 if(chicken.hitPlayer(player)){
 
-                    if(player.canTakeDamage()){
+                    if(player.canTakeDamage() && !player.isShieldActive()){
                         player.takeDamage();
 
                         if(player.getLives() <= 0){
@@ -392,39 +399,38 @@ public class GamePanel extends JPanel implements KeyListener {
                 }
             }
 
-            //check strike between egg and player(spaceship)
-            for(int i = 0 ; i < eggs.size() ; i++){
+            //check strike between egg and player
+            for(int i = 0; i < eggs.size(); i++){
+
                 Egg egg = eggs.get(i);
 
                 if(player.isHit(egg)){
 
-                    //add explosion when egg hits player
-                    explosions.add(new Explosion(
-                            egg.getX() + egg.getWidth() / 2,
-                            egg.getY() + egg.getHeight() / 2,
-                            50
-                    ));
-
                     eggs.remove(i);
                     i--;
 
-                    if(player.canTakeDamage()){
+                    if(player.canTakeDamage()
+                            && !player.isShieldActive()){
 
-                        if (!player.isShieldActive()){
+                        player.takeDamage();
 
-                            player.takeDamage();
+                        //explosion after losing life
+                        explosions.add(new Explosion(
+                                egg.getX() + egg.getWidth() / 2,
+                                egg.getY() + egg.getHeight() / 2,
+                                50
+                        ));
 
-                            if(player.getLives() <= 0) {
-                                gameOver = true;
-                                saveGameResult();
-                                gameTimer.stop();
-                            }
+                        if(player.getLives() <= 0){
 
+                            gameOver = true;
+                            saveGameResult();
+                            gameTimer.stop();
                         }
                     }
-
                 }
             }
+
 
             //go to next level after killing all chickens
             if (!gameOver && !gameWon && !bossLevel && chickenManager.getChickens().isEmpty()) {
@@ -478,68 +484,80 @@ public class GamePanel extends JPanel implements KeyListener {
     protected void paintComponent(Graphics g) {
 
         super.paintComponent(g);
-
-        g.setColor(Color.GREEN);
-        g.fillRect(
-                player.getX(),
-                player.getY(),
-                player.getWidth(),
-                player.getHeight()
+        //draw game background
+        g.drawImage(
+                backgroundImage,
+                0,
+                0,
+                getWidth(),
+                getHeight(),
+                this
         );
-        //draw shield around player
+
+        //draw shield
         if(player.isShieldActive()) {
 
-            g.setColor(Color.CYAN);
+            int shieldSize =
+                    Math.max(
+                            player.getWidth(),
+                            player.getHeight()
+                    ) + 20;
+
+            int shieldX =
+                    player.getX()
+                            + player.getWidth() / 2
+                            - shieldSize / 2;
+
+            int shieldY =
+                    player.getY()
+                            + player.getHeight() / 2
+                            - shieldSize / 2;
+
+            //transparent shield
+            g.setColor(new Color(0, 200, 255, 60));
+
+            g.fillOval(
+                    shieldX,
+                    shieldY,
+                    shieldSize,
+                    shieldSize
+            );
+
+            //shield border
+            g.setColor(new Color(100, 230, 255));
 
             g.drawOval(
-                    player.getX() - 10,
-                    player.getY() - 10,
-                    player.getWidth() + 20,
-                    player.getHeight() + 20
+                    shieldX,
+                    shieldY,
+                    shieldSize,
+                    shieldSize
             );
-
         }
-        g.setColor(Color.YELLOW);
 
+        //draw player
+        player.draw(g);
+
+        //draw bullets
         for(Bullets bullet : bullets){
 
-            g.fillRect(
-                    bullet.getX(),
-                    bullet.getY(),
-                    bullet.getWidth(),
-                    bullet.getHeight()
-            );
-
+            bullet.draw(g);
         }
-
         if (bossLevel && boss != null) {
 
             boss.draw(g);
 
         } else {
 
-            for (Chicken chicken : chickenManager.getChickens()) {
-                g.setColor(chicken.getColor());
+            for(Chicken chicken : chickenManager.getChickens()){
 
-                g.fillRect(
-                        chicken.getX(),
-                        chicken.getY(),
-                        chicken.getWidth(),
-                        chicken.getHeight()
-                );
+                chicken.draw(g);
             }
         }
 
-        g.setColor(Color.WHITE);
+        //draw eggs
+        for(Egg egg : eggs){
 
-        for (Egg egg : eggs) {
-
-            g.fillOval(
-                    egg.getX(),
-                    egg.getY(),
-                    egg.getWidth(),
-                    egg.getHeight()
-            );
+            egg.draw(g);
         }
 
         //draw explosions
@@ -911,7 +929,7 @@ public class GamePanel extends JPanel implements KeyListener {
 
                     int fireCount = player.getFireCount();
 
-                    int spacing = 12;
+                    int spacing = 16;
 
                     int startX = player.getX() + player.getWidth() / 2 -
                             ((fireCount - 1) * spacing) / 2;
