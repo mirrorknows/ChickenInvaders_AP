@@ -11,13 +11,15 @@ public class ChickenManager {
     private int moveDirection  = 1;
 
     //distance that chickens move down after touching a border
-    private int moveDownStep = 20;
+    private int moveDownStep;
 
     private Level level;
 
     private double groupSpeed;
 
     private Cell[][] cells;
+
+    private double storedMovement = 0;
 
     public ChickenManager(Level level){
 
@@ -34,10 +36,6 @@ public class ChickenManager {
 
     public ArrayList<Chicken> getChickens() {
         return chickens;
-    }
-
-    public void addChicken(Chicken chicken){
-        chickens.add(chicken);
     }
 
     //5x8 chicken formation
@@ -149,10 +147,10 @@ public class ChickenManager {
                         break;
                 }
 
-                x += 45;
+                x += 55;
             }
 
-            y += 45;
+            y += 55;
         }
     }
 
@@ -237,44 +235,72 @@ public class ChickenManager {
 
         int dy = 0;
 
+        //save extra movement
+        storedMovement += groupSpeed;
+        int moveAmount = (int) storedMovement;
+        storedMovement -= moveAmount;
+
+        int dx = moveAmount * moveDirection;
+
         boolean hitBorder = false;
 
-        for(int row = 0; row < 5; row++){
+        int chickenWidth = 50;
 
-            for(int col = 0; col < 8; col++){
+        int leftMost = Integer.MAX_VALUE;
+        int rightMost = Integer.MIN_VALUE;
+
+        //find left and right borders of the formation
+        for (int row = 0; row < 5; row++) {
+
+            for (int col = 0; col < 8; col++) {
 
                 Cell cell = cells[row][col];
 
-                if(cell != null && cell.hasMoreChickens()){
+                if (cell != null && cell.hasMoreChickens()) {
 
-                    int dx = getCellDx(cell);
-
-                    int nextLeft = cell.getX() + dx;
-                    int nextRight = cell.getX() + dx + 35;
-
-                    if(moveDirection < 0 && nextLeft <= 120){
-
-                        hitBorder = true;
-
+                    if (cell.getX() < leftMost) {
+                        leftMost = cell.getX();
                     }
 
-                    if(moveDirection > 0 && nextRight >= panelWidth - 20){
-
-                        hitBorder = true;
-
+                    if (cell.getX() + chickenWidth > rightMost) {
+                        rightMost = cell.getX() + chickenWidth;
                     }
                 }
             }
         }
 
-        if(hitBorder){
+            //no chickens left
+            if (leftMost == Integer.MAX_VALUE ||
+                rightMost == Integer.MIN_VALUE) {
 
-            moveDirection *= -1;
-            dy = moveDownStep;
+            return;
+        }
+
+        //move exactly to the border
+        if(moveDirection > 0 && rightMost + dx >= panelWidth){
+
+            dx = panelWidth - rightMost;
+
+            hitBorder = true;
+
+        } else if(moveDirection < 0 && leftMost + dx <= 0){
+
+            dx = -leftMost;
+
+            hitBorder = true;
 
         }
 
-        //move cells
+        //change direction after touching border
+        if(hitBorder){
+
+            dy = moveDownStep;
+
+            moveDirection *= -1;
+
+        }
+
+        //move all cells together
         for(int row = 0; row < 5; row++){
 
             for(int col = 0; col < 8; col++){
@@ -283,8 +309,6 @@ public class ChickenManager {
 
                 if(cell != null){
 
-                    int dx = getCellDx(cell);
-
                     cell.move(dx, dy);
 
                 }
@@ -292,16 +316,19 @@ public class ChickenManager {
         }
 
         //sync chickens with cells
-        for(Chicken chicken : chickens){
+        for (Chicken chicken : chickens) {
 
-            if(chicken.isMovingToCell()){
+            if (chicken.isMovingToCell()) {
 
+                //follow horizontal grid movement
+                chicken.moveWithGrid(dx, 0);
+
+                //move toward its cell
                 chicken.moveToCell();
 
-            } else{
+            } else {
 
                 chicken.updatePositionFromCell();
-
             }
         }
     }
@@ -391,18 +418,4 @@ public class ChickenManager {
         }
     }
 
-
-    //return movement speed based on cell type
-    private int getCellDx(Cell cell){
-
-        int speedMultiplier = 1;
-
-        if(cell.getType().equals("FAST")){
-
-            speedMultiplier = 2;
-
-        }
-
-        return (int)(groupSpeed * speedMultiplier * moveDirection);
-    }
 }

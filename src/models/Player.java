@@ -24,8 +24,8 @@ public class Player {
     private int speed = 5;
 
     //player lives
-    private  int lives = 3;
-    private int maxLives = 5;
+    private  int lives = 100;
+    private int maxLives = 100;
 
     //number of bullets in one shot
     private int fireCount = 1;
@@ -199,6 +199,18 @@ public class Player {
 
         return shieldActive;
     }
+
+    //stop temporary power ups
+    public void resetTemporaryPowerUps() {
+
+        rapidFireActive = false;
+        rapidFireEndTime = 0;
+
+        shieldActive = false;
+        shieldEndTime = 0;
+    }
+
+
     //getters
     public int getX() {
         return x;

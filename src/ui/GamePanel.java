@@ -76,7 +76,16 @@ public class GamePanel extends JPanel implements KeyListener {
     //game background
     private Image backgroundImage;
 
-    public GamePanel(){
+    //player username
+    private String username;
+
+    public GamePanel(String username){
+
+        if(username== null || username.trim().isEmpty()){
+            this.username = "Guest";
+        }else{
+            this.username = username;
+        }
 
         backgroundImage = ImageLoader.loadImage(
                 "/images/backgrounds/main_gameBG.png"
@@ -259,7 +268,7 @@ public class GamePanel extends JPanel implements KeyListener {
                                 explosions.add(new Explosion(
                                         chicken.getX() + chicken.getWidth() / 2,
                                         chicken.getY() + chicken.getHeight() / 2,
-                                        60
+                                        80
                                 ));
 
                                 //20% chance to drop powerup + limit number of powerups
@@ -346,11 +355,19 @@ public class GamePanel extends JPanel implements KeyListener {
 
                         if (boss.isDead()) {
 
+                            int explosionSize;
+
+                            if(finalBossLevel) {
+                                explosionSize = 260;
+                            } else {
+                                explosionSize = 180;
+                            }
+
                             //add explosion when boss dies
                             explosions.add(new Explosion(
                                     boss.getX() + boss.getWidth() / 2,
                                     boss.getY() + boss.getHeight() / 2,
-                                    180
+                                    explosionSize
                             ));
 
                             if(finalBossLevel){
@@ -388,6 +405,13 @@ public class GamePanel extends JPanel implements KeyListener {
 
                     if(player.canTakeDamage() && !player.isShieldActive()){
                         player.takeDamage();
+
+                        //explosion after hitting chicken
+                        explosions.add(new Explosion(
+                                player.getX() + player.getWidth() / 2,
+                                player.getY() + player.getHeight() / 2,
+                                80
+                        ));
 
                         if(player.getLives() <= 0){
                             gameOver = true;
@@ -572,46 +596,8 @@ public class GamePanel extends JPanel implements KeyListener {
             powerUp.draw(g);
         }
 
-
-        //score
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 20));
-
-        g.drawString("Score : " + scores, 20, 30);
-
-        //lives
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 20));
-
-        g.drawString("Lives : " + player.getLives(), 20, 60);
-
-        //level
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 20));
-        g.drawString("Level : " + currentLevel, 20, 90);
-
-        //fire count
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 20));
-        g.drawString("Fire : " + player.getFireCount(), 20, 120);
-
-        //freeze status
-        if(isFreezeActive()) {
-
-            g.setColor(Color.BLUE);
-            g.setFont(new Font("Arial", Font.BOLD, 20));
-            g.drawString("Freeze", 20, 190);
-
-        }
-
-        //rapid fire status
-        if(player.isRapidFireActive()) {
-
-            g.setColor(Color.YELLOW);
-            g.setFont(new Font("Arial", Font.BOLD, 20));
-            g.drawString("Rapid Fire", 20, 150);
-
-        }
+        //draw game information
+        drawGameInfo(g);
 
         //game over
         if (gameOver) {
@@ -684,9 +670,64 @@ public class GamePanel extends JPanel implements KeyListener {
             g.drawString(info, infoX, y + 45);
         }
     }
+    //draw game information
+    private void drawGameInfo(Graphics g) {
 
+        int x = 20;
+        int y = 35;
+        int gap = 27;
+
+        g.setFont(new Font("Arial", Font.BOLD, 18));
+
+        //username
+        g.setColor(new Color(100, 220, 255));
+        g.drawString("PLAYER : " + username, x, y);
+        y += gap;
+
+        //score
+        g.setColor(Color.WHITE);
+        g.drawString("SCORE : " + scores, x, y);
+        y += gap;
+
+        //level
+        g.setColor(new Color(210, 170, 255));
+        g.drawString("LEVEL : " + currentLevel, x, y);
+        y += gap;
+
+        //lives
+        g.setColor(new Color(255, 100, 120));
+        g.drawString("LIVES : " + player.getLives(), x, y);
+        y += gap;
+
+        //fire count
+        g.setColor(new Color(255, 220, 80));
+        g.drawString("FIRE : " + player.getFireCount(), x, y);
+        y += gap;
+
+        //power up status
+        g.setColor(new Color(100, 255, 170));
+
+        if(player.isRapidFireActive()) {
+
+            g.drawString("RAPID FIRE", x, y);
+            y += gap;
+        }
+
+        if(player.isShieldActive()) {
+
+            g.drawString("SHIELD", x, y);
+            y += gap;
+        }
+
+        if(isFreezeActive()) {
+
+            g.drawString("FREEZE", x, y);
+        }
+    }
     //create chicken for levels
     private void startLevel(){
+
+        resetTemporaryPowerUps();
 
         //level object
         Level level = new Level(currentLevel);
@@ -707,6 +748,8 @@ public class GamePanel extends JPanel implements KeyListener {
     //start first boss level after level 3
     private void startBossLevel4() {
 
+        resetTemporaryPowerUps();
+
         bossLevel = true;
         finalBossLevel = false;
 
@@ -720,6 +763,8 @@ public class GamePanel extends JPanel implements KeyListener {
 
     //start final boss level 8
     private void startFinalBossLevel8(){
+
+        resetTemporaryPowerUps();
 
         bossLevel = true;
         finalBossLevel = true;
@@ -758,28 +803,28 @@ public class GamePanel extends JPanel implements KeyListener {
         int centerY = boss.getY() + boss.getHeight() / 2;
 
         //up
-        eggs.add(new Egg(centerX, centerY, 0, -4));
+        eggs.add(new Egg(centerX, centerY, 0, -5));
 
         //down
-        eggs.add(new Egg(centerX, centerY, 0, 4));
+        eggs.add(new Egg(centerX, centerY, 0, 5));
 
         //left
-        eggs.add(new Egg(centerX, centerY, -4, 0));
+        eggs.add(new Egg(centerX, centerY, -5, 0));
 
         //right
-        eggs.add(new Egg(centerX, centerY, 4, 0));
+        eggs.add(new Egg(centerX, centerY, 5, 0));
 
         //up-left
-        eggs.add(new Egg(centerX, centerY, -3, -3));
+        eggs.add(new Egg(centerX, centerY, -4, -4));
 
         //up-right
-        eggs.add(new Egg(centerX, centerY, 3, -3));
+        eggs.add(new Egg(centerX, centerY, 4, -4));
 
         //down-left
-        eggs.add(new Egg(centerX, centerY, -3, 3));
+        eggs.add(new Egg(centerX, centerY, -4, 4));
 
         //down-right
-        eggs.add(new Egg(centerX, centerY, 3, 3));
+        eggs.add(new Egg(centerX, centerY, 4, 4));
     }
 
     //choose one chicken and shoot
@@ -823,6 +868,16 @@ public class GamePanel extends JPanel implements KeyListener {
 
         return freezeActive;
     }
+
+    //stop temporary power ups
+    private void resetTemporaryPowerUps() {
+
+        freezeActive = false;
+        freezeEndTime = 0;
+
+        player.resetTemporaryPowerUps();
+    }
+
     //return to main menu
     private void returnToMainMenu(){
 
@@ -929,7 +984,7 @@ public class GamePanel extends JPanel implements KeyListener {
 
                     int fireCount = player.getFireCount();
 
-                    int spacing = 16;
+                    int spacing = 20;
 
                     int startX = player.getX() + player.getWidth() / 2 -
                             ((fireCount - 1) * spacing) / 2;

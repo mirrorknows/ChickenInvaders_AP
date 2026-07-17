@@ -7,19 +7,13 @@ public class FastChicken extends Chicken {
 
         super(
                 x, y,
-                35, 35,
-                2,
+                45, 45,
+                12,
                 lives, "/images/enemies/fast_chicken.png"
         );
 
     }
 
-    @Override
-    public void move(int moveDirection, double groupSpeed) {
-
-        x += (int )(speed* groupSpeed * moveDirection);
-
-    }
     @Override
     public int getScore(){
         return 15;

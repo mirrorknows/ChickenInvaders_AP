@@ -9,15 +9,9 @@ public class ShooterChicken extends Chicken {
         super(
                 x,
                 y,
-                35, 35, 1,
+                45, 45, 6,
                 lives, "/images/enemies/shooter_chicken.png"
         );
-
-    }
-    @Override
-    public void move(int moveDirection, double groupSpeed) {
-
-        x += (int )(speed * groupSpeed * moveDirection);
 
     }
 
@@ -33,9 +27,9 @@ public class ShooterChicken extends Chicken {
         int dx;
 
         if(playerCenterX < startX) {
-            dx = -4;
+            dx = -5;
         } else {
-            dx = 4;
+            dx = 5;
         }
 
         return new Egg(
