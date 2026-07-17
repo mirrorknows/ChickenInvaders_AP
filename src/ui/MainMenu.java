@@ -35,7 +35,7 @@ public class MainMenu extends JFrame {
 
         // Load background image from resources
         URL backgroundUrl = getClass().getResource(
-                        "/images/backgrounds/login_background.png");
+                        "/images/backgrounds/bg_main_menu.png");
 
         if(backgroundUrl == null) {
             throw new IllegalStateException("background image not found");
@@ -202,7 +202,7 @@ public class MainMenu extends JFrame {
         button.setFocusPainted(false);
 
         button.setBorder(BorderFactory.createLineBorder(
-                        new Color(207, 255, 4),
+                        new Color(255,215,0),
                         2
                 )
         );

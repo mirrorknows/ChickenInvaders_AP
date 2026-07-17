@@ -97,7 +97,7 @@ public class Level {
                 zigzagLives = 3;
                 shooterLives = 3;
 
-                cellCounter = 1;
+                cellCounter = 4;
 
                 break;
 
@@ -112,7 +112,7 @@ public class Level {
                 zigzagLives = 3;
                 shooterLives = 3;
 
-                cellCounter = 1;
+                cellCounter = 4;
 
                 break;
         }

@@ -1,5 +1,6 @@
 package ui;
 
+import helpers.ImageLoader;
 import models.User;
 import services.LoggedUser;
 import services.UserService;
@@ -40,13 +41,10 @@ public class LoginFrame extends JFrame {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        //panel
-
-        // Load background image from resources
-        ImageIcon backgroundIcon =
-                new ImageIcon(getClass().getResource("/images/backgrounds/login_background2.png"));
-
-        Image backgroundImage = backgroundIcon.getImage();
+        //load background image
+        Image backgroundImage = ImageLoader.loadImage(
+                "/images/backgrounds/login_register.png"
+        );
 
         panel = new JPanel() {
 
@@ -75,7 +73,7 @@ public class LoginFrame extends JFrame {
         welcomeLabel = new JLabel("WELCOME!");
 
         welcomeLabel.setFont(new Font("Verdana", Font.BOLD, 50));
-        welcomeLabel.setForeground(new Color(207,255,4));
+        welcomeLabel.setForeground(new Color(255,215,0));
 
         welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 

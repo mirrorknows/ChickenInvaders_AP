@@ -1,5 +1,6 @@
 package ui;
 
+import helpers.ImageLoader;
 import models.User;
 import services.UserService;
 
@@ -40,11 +41,10 @@ public class RegisterFrame extends JFrame {
 
         userService = new UserService();
 
-        // Load background image from resources
-        ImageIcon backgroundIcon =
-                new ImageIcon(getClass().getResource("/images/backgrounds/login_background2.png"));
-
-        Image backgroundImage = backgroundIcon.getImage();
+        //load background image
+        Image backgroundImage = ImageLoader.loadImage(
+                "/images/backgrounds/login_register.png"
+        );
 
         panel = new JPanel() {
 
