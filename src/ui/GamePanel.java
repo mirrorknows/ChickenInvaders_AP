@@ -1,6 +1,7 @@
 package ui;
 
 import helpers.ImageLoader;
+import helpers.SoundManager;
 import models.*;
 
 import javax.swing.*;
@@ -86,6 +87,8 @@ public class GamePanel extends JPanel implements KeyListener {
         }else{
             this.username = username;
         }
+
+        SoundManager.updateBackgroundMusic();
 
         backgroundImage = ImageLoader.loadImage(
                 "/images/backgrounds/main_gameBG.png"
@@ -271,6 +274,8 @@ public class GamePanel extends JPanel implements KeyListener {
                                         80
                                 ));
 
+                                SoundManager.playExplosionSound();
+
                                 //20% chance to drop powerup + limit number of powerups
                                 if (Math.random() < 0.20 && powerUps.size() < maxPowerUpsOnScreen) {
 
@@ -370,18 +375,19 @@ public class GamePanel extends JPanel implements KeyListener {
                                     explosionSize
                             ));
 
+                            SoundManager.playExplosionSound();
+
                             if(finalBossLevel){
 
                                 scores += 1000;
+
                                 bossLevel = false;
                                 finalBossLevel = false;
                                 boss = null;
 
-                                gameWon = true;
-                                saveGameResult();
-                                gameTimer.stop();
+                                finishGame(true);
 
-                            }else{
+                            } else {
 
                                 scores += 500;
                                 currentLevel = 5;
@@ -413,10 +419,10 @@ public class GamePanel extends JPanel implements KeyListener {
                                 80
                         ));
 
+                        SoundManager.playExplosionSound();
+
                         if(player.getLives() <= 0){
-                            gameOver = true;
-                            saveGameResult();
-                            gameTimer.stop();
+                            finishGame(false);
                         }
                     }
                     break;
@@ -445,11 +451,10 @@ public class GamePanel extends JPanel implements KeyListener {
                                 50
                         ));
 
-                        if(player.getLives() <= 0){
+                        SoundManager.playExplosionSound();
 
-                            gameOver = true;
-                            saveGameResult();
-                            gameTimer.stop();
+                        if(player.getLives() <= 0){
+                            finishGame(false);
                         }
                     }
                 }
@@ -476,10 +481,7 @@ public class GamePanel extends JPanel implements KeyListener {
 
             if (!bossLevel && chickenManager.reachedBottom(getHeight())) {
 
-                gameOver = true;
-                saveGameResult();
-                gameTimer.stop();
-
+                finishGame(false);
                 repaint();
 
             }
@@ -907,6 +909,27 @@ public class GamePanel extends JPanel implements KeyListener {
         }
     }
 
+    //finish game
+    private void finishGame(boolean won) {
+
+        if(gameOver || gameWon) {
+            return;
+        }
+
+        SoundManager.stopBackgroundMusic();
+
+        if(won) {
+            gameWon = true;
+            SoundManager.playWinSound();
+        } else {
+            gameOver = true;
+            SoundManager.playGameOverSound();
+        }
+
+        saveGameResult();
+        gameTimer.stop();
+    }
+
     @Override
     public void keyTyped(KeyEvent e) {
 
@@ -997,6 +1020,8 @@ public class GamePanel extends JPanel implements KeyListener {
                         ));
 
                     }
+
+                    SoundManager.playShotSound();
 
                     player.setLastShotTime(currentTime);
                 }
