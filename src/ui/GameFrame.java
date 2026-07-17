@@ -6,17 +6,20 @@ import javax.swing.*;
 public class GameFrame extends JFrame {
 
     //create game window
-    public GameFrame(){
+    public GameFrame(String username){
 
         setTitle("Chicken Invaders");
 
-        setSize(800,600);
+        setSize(800, 600);
+
+        setResizable(false);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        add(new GamePanel());
+        add(new GamePanel(username));
 
         setLocationRelativeTo(null);
+
         setVisible(true);
     }
 }

@@ -9,13 +9,14 @@ public abstract class Chicken {
     //chicken position
     protected int x;
     protected int y;
+    protected double exactX;
+    protected double exactY;
 
     //chicken size;
     protected  int width;
     protected  int height;
 
-    //chickens speed
-    protected int speed ;
+    protected int spawnSpeed;
 
     protected int lives;
 
@@ -31,7 +32,7 @@ public abstract class Chicken {
             int y,
             int width,
             int height,
-            int speed,
+            int spawnSpeed,
             int lives,
             String imagePath
     ){
@@ -39,10 +40,13 @@ public abstract class Chicken {
         this.x = x;
         this.y = y;
 
+        this.exactX = x;
+        this.exactY = y;
+
         this.width = width;
         this.height = height;
 
-        this.speed = speed;
+        this.spawnSpeed = spawnSpeed;
         this.lives = lives;
 
         this.image = ImageLoader.loadImage(imagePath);
@@ -83,59 +87,45 @@ public abstract class Chicken {
         movingToCell = true;
 
     }
-    public abstract void move(int direction, double groupSpeed);
 
-    // move replacement chicken to its current cell
-    public void moveToCell(){
+    //move replacement chicken toward its cell
+    public void moveToCell() {
 
-        if(cell == null){
+        if (cell == null) {
             return;
         }
 
-        int speed = 8;
+        double targetX = cell.getX();
+        double targetY = cell.getY();
 
-        int currentTargetX = cell.getX();
-        int currentTargetY = cell.getY();
+        double distanceX = targetX - exactX;
+        double distanceY = targetY - exactY;
 
-        if(x < currentTargetX){
+        double distance = Math.sqrt(
+                distanceX * distanceX +
+                        distanceY * distanceY
+        );
 
-            x += speed;
+        //reached the target cell
+        if (distance <= spawnSpeed) {
 
-            if(x > currentTargetX){
-                x = currentTargetX;
-            }
+            exactX = targetX;
+            exactY = targetY;
 
-        } else if(x > currentTargetX){
-
-            x -= speed;
-
-            if(x < currentTargetX){
-                x = currentTargetX;
-            }
-        }
-
-        if(y < currentTargetY){
-
-            y += speed;
-
-            if(y > currentTargetY){
-                y = currentTargetY;
-            }
-
-        } else if(y > currentTargetY){
-
-            y -= speed;
-
-            if(y < currentTargetY){
-                y = currentTargetY;
-            }
-        }
-
-        if(x == currentTargetX && y == currentTargetY){
+            x = (int) exactX;
+            y = (int) exactY;
 
             movingToCell = false;
 
+            return;
         }
+
+        //move toward the target cell
+        exactX += distanceX / distance * spawnSpeed;
+        exactY += distanceY / distance * spawnSpeed;
+
+        x = (int) Math.round(exactX);
+        y = (int) Math.round(exactY);
     }
 
     public abstract int getScore();
@@ -169,13 +159,15 @@ public abstract class Chicken {
     }
 
 
-    public void followCell(){
+    public void followCell() {
 
-        if(cell != null){
+        if (cell != null) {
 
-            x = cell.getX();
-            y = cell.getY();
+            exactX = cell.getX();
+            exactY = cell.getY();
 
+            x = (int) exactX;
+            y = (int) exactY;
         }
     }
 
@@ -184,6 +176,16 @@ public abstract class Chicken {
 
         followCell();
 
+    }
+
+    //move chicken with the formation
+    public void moveWithGrid(int dx, int dy) {
+
+        exactX += dx;
+        exactY += dy;
+
+        x = (int) Math.round(exactX);
+        y = (int) Math.round(exactY);
     }
 
     //getters
@@ -203,8 +205,8 @@ public abstract class Chicken {
         return height;
     }
 
-    public int getSpeed() {
-        return speed;
+    public int getSpawnSpeed() {
+        return spawnSpeed;
     }
 
     public int getLives(){
@@ -214,10 +216,14 @@ public abstract class Chicken {
     //setters
 
     public void setX(int x) {
+
         this.x = x;
+        this.exactX = x;
     }
 
     public void setY(int y) {
+
         this.y = y;
+        this.exactY = y;
     }
 }

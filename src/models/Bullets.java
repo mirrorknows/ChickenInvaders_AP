@@ -15,8 +15,8 @@ public class Bullets {
     private final int speed = 8 ;
 
     //bullet size
-    private final int width = 18;
-    private final int height = 36;
+    private final int width = 20;
+    private final int height = 38;
 
     //bullet image
     private static final Image image =

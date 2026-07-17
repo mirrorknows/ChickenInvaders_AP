@@ -63,7 +63,7 @@ public class Level {
                 moveDownStep = 25;
                 eggDropDelay = 1500;
 
-                normalLives = 3;
+                normalLives = 2;
                 fastLives = 0;
                 zigzagLives = 2;
                 shooterLives = 0;
@@ -97,7 +97,7 @@ public class Level {
                 zigzagLives = 3;
                 shooterLives = 3;
 
-                cellCounter = 4;
+                cellCounter = 1;
 
                 break;
 
@@ -112,7 +112,7 @@ public class Level {
                 zigzagLives = 3;
                 shooterLives = 3;
 
-                cellCounter = 4;
+                cellCounter = 1;
 
                 break;
         }

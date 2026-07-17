@@ -100,11 +100,10 @@ public class MainMenu extends JFrame {
         panel.add(Box.createVerticalStrut(12));
 
         //new game action listener
-        newGameButton.addActionListener(e-> {
+        newGameButton.addActionListener(e -> {
 
-            new GameFrame();
+            new GameFrame(LoggedUser.getUser().getUsername());
             dispose();
-
         });
 
         //high scores

@@ -8,12 +8,12 @@ import java.awt.*;
 public class Boss {
 
     //boss position
-    private int x;
-    private int y;
+    protected int x;
+    protected int y;
 
     //boss size
-    private int width;
-    private int height;
+    protected int width;
+    protected int height;
 
     //boss lives
     private int lives;
@@ -39,8 +39,8 @@ public class Boss {
         this.x = x;
         this.y = y;
 
-        this.width = 160;
-        this.height = 120;
+        this.width = 200;
+        this.height = 150;
 
         this.lives = lives;
         this.maxLives = lives;
