@@ -1,5 +1,6 @@
 package ui;
 
+import helpers.SoundManager;
 import models.User;
 import services.LoggedUser;
 import services.UserService;
@@ -220,6 +221,8 @@ public class SettingsFrame extends JFrame {
             user.setShotSoundOn(shotSoundOn);
             user.setCrashSoundOn(crashSoundOn);
             user.setGameOverSoundOn(gameOverSoundOn);
+
+            SoundManager.updateBackgroundMusic();
 
             JOptionPane.showMessageDialog(
                     this,

@@ -1,5 +1,6 @@
 package ui;
 
+import helpers.SoundManager;
 import services.LoggedUser;
 
 import javax.swing.*;
@@ -179,7 +180,9 @@ public class MainMenu extends JFrame {
             );
             System.exit(0);
         });
+
         setLocationRelativeTo(null);
+        SoundManager.updateBackgroundMusic();
         setVisible(true);
     }
 
