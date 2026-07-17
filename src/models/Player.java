@@ -24,12 +24,12 @@ public class Player {
     private int speed = 5;
 
     //player lives
-    private  int lives = 100;
-    private int maxLives = 100;
+    private  int lives = 3;
+    private int maxLives = 5;
 
     //number of bullets in one shot
     private int fireCount = 1;
-    private int maxFireCount = 5;
+    private int maxFireCount = 6;
 
     //shoot delay
     private final int shootDelay = 300;
@@ -58,7 +58,7 @@ public class Player {
         this.y = y;
 
         image = ImageLoader.loadImage(
-                "/images/planes/6.png"
+                "/images/planes/5.png"
         );
 
         lastShotTime = 0;
@@ -210,6 +210,20 @@ public class Player {
         shieldEndTime = 0;
     }
 
+    //adjust player timers after game pause
+    public void addPausedTime(long pausedDuration) {
+
+        lastShotTime += pausedDuration;
+        lastDamageTime += pausedDuration;
+
+        if(rapidFireActive) {
+            rapidFireEndTime += pausedDuration;
+        }
+
+        if(shieldActive) {
+            shieldEndTime += pausedDuration;
+        }
+    }
 
     //getters
     public int getX() {

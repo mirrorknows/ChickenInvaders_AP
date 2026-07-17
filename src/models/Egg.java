@@ -13,8 +13,8 @@ public class Egg {
     private int dx;
     private int dy;
 
-    private final int width = 18;
-    private final int height = 22;
+    private final int width = 24;
+    private final int height = 28;
 
 
     //egg image

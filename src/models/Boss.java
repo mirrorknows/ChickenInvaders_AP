@@ -39,8 +39,8 @@ public class Boss {
         this.x = x;
         this.y = y;
 
-        this.width = 200;
-        this.height = 150;
+        this.width = 240;
+        this.height = 180;
 
         this.lives = lives;
         this.maxLives = lives;
@@ -129,6 +129,12 @@ public class Boss {
             return true;
         }
         return false;
+    }
+
+    //boss attack timer after game pause
+    public void addPausedTime(long pausedDuration) {
+
+        lastAttackTime += pausedDuration;
     }
 
     //getters

@@ -28,8 +28,8 @@ public class FinalBoss extends Boss {
 
         super(x, y, lives);
 
-        width = 240;
-        height = 180;
+        width = 270;
+        height = 210;
 
         exactX = x;
         startY = y;
@@ -109,4 +109,14 @@ public class FinalBoss extends Boss {
 
         return false;
     }
+
+    @Override
+    public void addPausedTime(long pausedDuration) {
+
+        super.addPausedTime(pausedDuration);
+
+        lastFinalAttack += pausedDuration;
+        nextDirectionChangeTime += pausedDuration;
+    }
+
 }
