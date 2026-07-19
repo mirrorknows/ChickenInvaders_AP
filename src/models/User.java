@@ -12,6 +12,8 @@ public class User {
     private boolean crashSoundOn;
     private boolean gameOverSoundOn;
 
+    private String selectedPlane = "Default";
+
     //constructor
     public User (String username, String password, int id, int highScore, int lastLevel,
                  boolean musicOn, boolean shotSoundOn, boolean crashSoundOn, boolean gameOverSoundOn){
@@ -53,6 +55,11 @@ public class User {
     public boolean isShotSoundOn() {
         return shotSoundOn;
     }
+
+    public String getSelectedPlane() {
+        return selectedPlane;
+    }
+
     //setters
 
     public void setHighScore(int highScore) {
@@ -78,5 +85,8 @@ public class User {
     }
     public void setUsername(String username) {
         this.username = username;
+    }
+    public void setSelectedPlane(String selectedPlane) {
+        this.selectedPlane = selectedPlane;
     }
 }

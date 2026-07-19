@@ -92,6 +92,8 @@ public class UserService {
                             resultSet.getBoolean("gameover_sound_on")
                     );
 
+                    user.setSelectedPlane(resultSet.getString("selected_plane"));
+
                     return user;
                 }
             }
@@ -143,6 +145,34 @@ public class UserService {
             e.printStackTrace();
 
         }
+    }
+
+    //update selected plane
+    public boolean updateSelectedPlane(
+            String username,
+            String selectedPlane
+    ) {
+
+        String sql =
+                "UPDATE users SET selected_plane = ? " +
+                        "WHERE username = ?";
+
+        try(Connection connection = databaseManager.getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, selectedPlane);
+            statement.setString(2, username);
+
+            int rows = statement.executeUpdate();
+
+            return rows > 0;
+
+        } catch(SQLException e) {
+
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     //update sound settings
