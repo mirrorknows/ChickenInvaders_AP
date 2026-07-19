@@ -10,6 +10,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import services.GameResultService;
+import services.LoggedUser;
 
 //this class manages the game panel and game loop
 
@@ -93,12 +94,18 @@ public class GamePanel extends JPanel implements KeyListener {
         SoundManager.updateBackgroundMusic();
 
         backgroundImage = ImageLoader.loadImage(
-                "/images/backgrounds/deepSpace.png"
-        );
+                "/images/backgrounds/deepSpace.png");
 
         setBackground(Color.BLACK);
 
-        player = new Player(400, 500);
+        String selectedPlane = "Default";
+
+        if(LoggedUser.getUser() != null) {
+
+            selectedPlane = LoggedUser.getUser().getSelectedPlane();
+        }
+
+        player = new Player(400, 500, selectedPlane);
 
         bullets = new ArrayList<>();
         eggs = new ArrayList<>();
@@ -971,7 +978,7 @@ public class GamePanel extends JPanel implements KeyListener {
 
             if(boss.isHit(bullet)){
 
-                boss.takeDamage();
+                boss.takeDamage(player.getBossDamage());
 
                 bullets.remove(i);
                 i--;

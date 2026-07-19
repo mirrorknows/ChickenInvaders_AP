@@ -26,6 +26,7 @@ public class MainMenu extends JFrame {
     private JButton settingsButton;
     private JButton howToPlayButton;
     private JButton exitButton;
+    private JButton storeButton;
 
     public MainMenu(){
         setTitle("Main Menu");
@@ -141,8 +142,22 @@ public class MainMenu extends JFrame {
             dispose();
         });
 
-        //how to play : guide
+        //store
+        storeButton = new JButton("Store");
 
+        buttonStyle(storeButton);
+
+        panel.add(storeButton);
+        panel.add(Box.createVerticalStrut(12));
+
+        //store action listener
+        storeButton.addActionListener(e -> {
+
+            new StoreFrame();
+            dispose();
+        });
+
+        //how to play : guide
         howToPlayButton = new JButton("How To Play");
         buttonStyle(howToPlayButton);
 

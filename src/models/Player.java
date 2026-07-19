@@ -32,7 +32,13 @@ public class Player {
     private int maxFireCount = 6;
 
     //shoot delay
-    private final int shootDelay = 300;
+    private int shootDelay = 300;
+
+    //selected plane
+    private String selectedPlane = "Default";
+
+    //damage to bosses
+    private int bossDamage = 1;
 
     //last shot
     private long lastShotTime;
@@ -52,14 +58,34 @@ public class Player {
     private boolean shieldActive = false;
     private long shieldEndTime = 0;
 
-    public Player(int x,int y){
+    //create default player
+    public Player(int x, int y) {
+
+        this(x, y, "Default");
+    }
+
+    //create player based on selected plane
+    public Player(
+            int x,
+            int y,
+            String selectedPlane
+    ) {
 
         this.x = x;
         this.y = y;
 
-        image = ImageLoader.loadImage(
-                "/images/planes/5.png"
-        );
+        if(selectedPlane == null ||
+                selectedPlane.trim().isEmpty()) {
+
+            this.selectedPlane = "Default";
+
+        } else {
+
+            this.selectedPlane = selectedPlane;
+        }
+
+        applyPlaneSettings();
+        loadPlaneImage();
 
         lastShotTime = 0;
     }
@@ -210,6 +236,64 @@ public class Player {
         shieldEndTime = 0;
     }
 
+    //apply selected plane settings
+    private void applyPlaneSettings() {
+
+        if(selectedPlane.equals("Fast")) {
+
+            speed = 7;
+            shootDelay = 250;
+            lives = 3;
+            bossDamage = 1;
+
+        } else if(selectedPlane.equals("Heavy")) {
+
+            speed = 4;
+            shootDelay = 200;
+            lives = 5;
+            bossDamage = 1;
+
+        } else if(selectedPlane.equals("Sniper")) {
+
+            speed = 5;
+            shootDelay = 150;
+            lives = 3;
+            bossDamage = 2;
+
+        } else {
+
+            selectedPlane = "Default";
+
+            speed = 5;
+            shootDelay = 300;
+            lives = 3;
+            bossDamage = 1;
+        }
+    }
+
+
+    //load image based on selected plane
+    private void loadPlaneImage() {
+
+        if(selectedPlane.equals("Fast")) {
+
+            image = ImageLoader.loadImage("/images/planes/4.png");
+
+        } else if(selectedPlane.equals("Heavy")) {
+
+            image = ImageLoader.loadImage("/images/planes/7.png");
+
+        } else if(selectedPlane.equals("Sniper")) {
+
+            image = ImageLoader.loadImage("/images/planes/6.png");
+
+        } else {
+            image = ImageLoader.loadImage("/images/planes/5.png"
+            );
+        }
+    }
+
+
     //adjust player timers after game pause
     public void addPausedTime(long pausedDuration) {
 
@@ -268,6 +352,13 @@ public class Player {
 
     public long getLastShotTime() {
         return lastShotTime;
+    }
+    public String getSelectedPlane() {
+        return selectedPlane;
+    }
+
+    public int getBossDamage() {
+        return bossDamage;
     }
 
     //setters

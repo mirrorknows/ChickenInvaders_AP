@@ -52,9 +52,10 @@ public abstract class Boss {
     public abstract void move(int panelWidth);
 
     public abstract List<Egg> createAttack();
-    //reduce boss life after getting hit
-    public void takeDamage() {
-        lives--;
+
+    //reduce boss life based on damage
+    public void takeDamage(int damage) {
+        lives -= damage;
     }
 
     //check if boss has no lives left
@@ -72,12 +73,8 @@ public abstract class Boss {
 
     public void draw(Graphics g) {
 
-        g.drawImage(
-                image,
-                x,
-                y,
-                width,
-                height,
+        g.drawImage(image, x, y,
+                width, height,
                 null
         );
 
@@ -102,6 +99,7 @@ public abstract class Boss {
         g.setColor(Color.WHITE);
         g.drawRect(barX, barY, barWidth, barHeight);
     }
+
     //if boss can attack
     public boolean canAttack(){
 
