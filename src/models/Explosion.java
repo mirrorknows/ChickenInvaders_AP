@@ -71,9 +71,9 @@ public class Explosion {
     }
 
     //freeze explosion animation during pause
-    public void addPausedTime(long pausedDuration) {
+    public void addPausedTime(long pauseTime) {
 
-        startTime += pausedDuration;
+        startTime += pauseTime;
     }
 
 }

@@ -2,8 +2,9 @@ package ui;
 
 import helpers.ImageLoader;
 import helpers.SoundManager;
+import managers.ChickenManager;
 import models.*;
-
+import managers.PowerUpManager;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyListener;
@@ -48,15 +49,12 @@ public class GamePanel extends JPanel implements KeyListener {
     private ArrayList<Egg> eggs;
     private long lastEggDropTime = 0;
 
-    //shooter chicken attach time
+    //shooter chicken attack time
     private long lastShooterShotTime = 0 ;
     private final long shooterShotDelay = 2000;
 
     //all explosions in the game
     private ArrayList<Explosion> explosions;
-
-    //all power ups in the game
-    private ArrayList<PowerUp> powerUps;
 
     //time between two egg drops
     private long eggDropDelay = 3000;
@@ -70,12 +68,8 @@ public class GamePanel extends JPanel implements KeyListener {
     //checks if current boss is final boss
     private boolean finalBossLevel = false;
 
-    //max powerups on the screen
-    private final int maxPowerUpsOnScreen = 3 ;
-
-    //freeze bomb settings
-    private boolean freezeActive = false;
-    private long freezeEndTime = 0;
+    //manages all power ups
+    private PowerUpManager powerUpManager;
 
     //game background
     private Image backgroundImage;
@@ -109,8 +103,9 @@ public class GamePanel extends JPanel implements KeyListener {
 
         bullets = new ArrayList<>();
         eggs = new ArrayList<>();
-        powerUps = new ArrayList<>();
         explosions = new ArrayList<>();
+
+        powerUpManager = new PowerUpManager();
 
         gameResultService = new GameResultService();
 
@@ -122,23 +117,33 @@ public class GamePanel extends JPanel implements KeyListener {
 
         gameTimer = new Timer(16, e -> {
 
-            //after game end, only explosions continue
-            if(gameOver || gameWon){
+            //wait for level 4 boss explosion before starting level 5
+            boolean waitingForLevel5 = bossLevel && !finalBossLevel && boss == null;
+
+            //stop game updates if paused
+            if(paused){
+                return;
+            }
+
+            //after boss or end game just explosions continue
+            if(gameOver || gameWon || waitingForLevel5){
 
                 updateExplosions();
 
                 if(explosions.isEmpty()){
 
-                    endScreenVisible = true;
-                    gameTimer.stop();
+                    if(waitingForLevel5){
+
+                        bossLevel = false;
+                        currentLevel = 5;
+                        startLevel();
+
+                    } else {
+                        endScreenVisible = true;
+                        gameTimer.stop();
+                    }
                 }
-
                 repaint();
-                return;
-            }
-
-            //stop game updates while paused
-            if(paused){
                 return;
             }
 
@@ -149,7 +154,7 @@ public class GamePanel extends JPanel implements KeyListener {
 
             //update game objects
             updateEggs();
-            updatePowerUps();
+            powerUpManager.update(player,getHeight());
             updateBullets();
 
             //check collisions
@@ -261,9 +266,7 @@ public class GamePanel extends JPanel implements KeyListener {
         }
 
         //draw power ups
-        for(PowerUp powerUp : powerUps){
-            powerUp.draw(g);
-        }
+        powerUpManager.draw(g);
 
         //draw game information
         drawGameInfo(g);
@@ -387,7 +390,7 @@ public class GamePanel extends JPanel implements KeyListener {
             y += gap;
         }
 
-        if(isFreezeActive()) {
+        if(powerUpManager.isFreezeActive()) {
 
             g.drawString("FREEZE", x, y);
         }
@@ -395,7 +398,7 @@ public class GamePanel extends JPanel implements KeyListener {
     //create chicken for levels
     private void startLevel(){
 
-        resetTemporaryPowerUps();
+        powerUpManager.resetForNewLevel(player);
 
         //level object
         Level level = new Level(currentLevel);
@@ -408,7 +411,6 @@ public class GamePanel extends JPanel implements KeyListener {
 
         eggs.clear();
         bullets.clear();
-        powerUps.clear();
 
         long levelStartTime = System.currentTimeMillis();
 
@@ -419,7 +421,7 @@ public class GamePanel extends JPanel implements KeyListener {
     //start first boss level after level 3
     private void startBossLevel4() {
 
-        resetTemporaryPowerUps();
+        powerUpManager.resetForNewLevel(player);
 
         bossLevel = true;
         finalBossLevel = false;
@@ -428,7 +430,6 @@ public class GamePanel extends JPanel implements KeyListener {
 
         eggs.clear();
         bullets.clear();
-        powerUps.clear();
 
         lastEggDropTime = System.currentTimeMillis();
     }
@@ -436,7 +437,7 @@ public class GamePanel extends JPanel implements KeyListener {
     //start final boss level 8
     private void startFinalBossLevel8(){
 
-        resetTemporaryPowerUps();
+        powerUpManager.resetForNewLevel(player);
 
         bossLevel = true;
         finalBossLevel = true;
@@ -445,40 +446,8 @@ public class GamePanel extends JPanel implements KeyListener {
 
         eggs.clear();
         bullets.clear();
-        powerUps.clear();
 
         lastEggDropTime = System.currentTimeMillis();
-    }
-
-    //final boss attacks in eight directions
-    private void finalBossAttack(){
-
-        int centerX = boss.getX() + boss.getWidth() / 2;
-        int centerY = boss.getY() + boss.getHeight() / 2;
-
-        //up
-        eggs.add(new Egg(centerX, centerY, 0, -5));
-
-        //down
-        eggs.add(new Egg(centerX, centerY, 0, 5));
-
-        //left
-        eggs.add(new Egg(centerX, centerY, -5, 0));
-
-        //right
-        eggs.add(new Egg(centerX, centerY, 5, 0));
-
-        //up-left
-        eggs.add(new Egg(centerX, centerY, -4, -4));
-
-        //up-right
-        eggs.add(new Egg(centerX, centerY, 4, -4));
-
-        //down-left
-        eggs.add(new Egg(centerX, centerY, -4, 4));
-
-        //down-right
-        eggs.add(new Egg(centerX, centerY, 4, 4));
     }
 
     //choose one chicken and shoot
@@ -499,37 +468,6 @@ public class GamePanel extends JPanel implements KeyListener {
             eggs.add(egg);
 
         }
-    }
-
-    //freeze bomb for 3 sec
-    private void activateFreezeBomb() {
-
-        freezeActive = true;
-
-        freezeEndTime = System.currentTimeMillis() + 3000;
-
-    }
-
-    //check freeze time
-    private boolean isFreezeActive() {
-
-        if(freezeActive &&
-                System.currentTimeMillis() > freezeEndTime) {
-
-            freezeActive = false;
-
-        }
-
-        return freezeActive;
-    }
-
-    //stop temporary power ups
-    private void resetTemporaryPowerUps() {
-
-        freezeActive = false;
-        freezeEndTime = 0;
-
-        player.resetTemporaryPowerUps();
     }
 
     //return to main menu
@@ -582,35 +520,35 @@ public class GamePanel extends JPanel implements KeyListener {
 
     }
 
-    //move all game timers forward by the pause duration
-    private void adjustTimersAfterPause(long pausedDuration) {
+    //adjust all timers so they dont end during pause
+    private void addPauseTimeToTimers(long pauseTime) {
 
-        lastEggDropTime += pausedDuration;
-        lastShooterShotTime += pausedDuration;
+        lastEggDropTime += pauseTime;
+        lastShooterShotTime += pauseTime;
 
-        //freeze must not expire during pause
-        if(freezeActive) {
-            freezeEndTime += pausedDuration;
-        }
+        //power up timers
+        powerUpManager.addPausedTime(
+                pauseTime
+        );
 
         //player timers
-        player.addPausedTime(pausedDuration);
+        player.addPausedTime(pauseTime);
 
         //boss attack and movement timers
         if(boss != null) {
-            boss.addPausedTime(pausedDuration);
+            boss.addPausedTime(pauseTime);
         }
 
         //explosions must freeze during pause
         for(Explosion explosion : explosions) {
-            explosion.addPausedTime(pausedDuration);
+            explosion.addPausedTime(pauseTime);
         }
     }
 
     //update chicken group or boss movement
     private void updateEnemyMovement() {
 
-        if(isFreezeActive()){
+        if(powerUpManager.isFreezeActive()){
             return;
         }
 
@@ -628,7 +566,7 @@ public class GamePanel extends JPanel implements KeyListener {
 
             Egg egg = eggs.get(i);
 
-            if(!isFreezeActive()){
+            if(!powerUpManager.isFreezeActive()) {
                 egg.drop();
             }
 
@@ -639,46 +577,6 @@ public class GamePanel extends JPanel implements KeyListener {
                             egg.getY() > getHeight()
             ){
                 eggs.remove(i);
-                i--;
-            }
-        }
-    }
-
-    //move power ups and applies them when collected
-    private void updatePowerUps() {
-
-        for(int i = 0; i < powerUps.size(); i++){
-
-            PowerUp powerUp = powerUps.get(i);
-            powerUp.fall();
-
-            //remove power up if it leaves the screen
-            if(powerUp.getY() > getHeight()){
-
-                powerUps.remove(i);
-                i--;
-                continue;
-            }
-
-            //activate power up when it hits the player
-            if(powerUp.hitPlayer(player)){
-
-                if(powerUp.getType().equals("ADD_FIRE")){
-                    player.addFire();
-
-                } else if(powerUp.getType().equals("EXTRA_LIFE")){
-                    player.addLife();
-
-                } else if(powerUp.getType().equals("RAPID_FIRE")){
-                    player.activateRapidFire();
-
-                } else if(powerUp.getType().equals("SHIELD")){
-                    player.activateShield();
-
-                } else if(powerUp.getType().equals("FREEZE_BOMB")){
-                    activateFreezeBomb();
-                }
-                powerUps.remove(i);
                 i--;
             }
         }
@@ -704,7 +602,7 @@ public class GamePanel extends JPanel implements KeyListener {
     //update normal egg drops and shooter chicken attacks
     private void updateChickenAttacks() {
 
-        if(bossLevel || isFreezeActive()){
+        if(bossLevel || powerUpManager.isFreezeActive()){
             return;
         }
 
@@ -778,14 +676,10 @@ public class GamePanel extends JPanel implements KeyListener {
 
                         SoundManager.playExplosionSound();
 
-                        createPowerUp(chicken);
+                        powerUpManager.createPowerUp(chicken, player);
 
                         chickenManager.getChickens().remove(j);
-
-                        chickenManager.replaceChickenIfNeeded(
-                                chicken,
-                                getWidth()
-                        );
+                        chickenManager.replaceChickenIfNeeded(chicken, getWidth());
 
                         j--;
                     }
@@ -863,58 +757,6 @@ public class GamePanel extends JPanel implements KeyListener {
         }
     }
 
-    //creates a random power up after chicken dies
-    private void createPowerUp(Chicken chicken) {
-
-        //20 percent chance and maximum 3 power ups
-        if (Math.random() >= 0.20 ||
-                powerUps.size() >= maxPowerUpsOnScreen) {
-
-            return;
-        }
-
-        String type;
-
-        int randomPower = (int) (Math.random() * 5);
-
-        if (randomPower == 0) {
-
-            //give rapid fire if add fire is full
-            if (player.getFireCount() < player.getMaxFireCount()) {
-                type = "ADD_FIRE";
-            } else {
-                type = "RAPID_FIRE";
-            }
-
-        } else if (randomPower == 1) {
-
-            //give shield if lives are full
-            if (player.getLives() < player.getMaxLives()) {
-                type = "EXTRA_LIFE";
-            } else {
-                type = "SHIELD";
-            }
-
-        } else if (randomPower == 2) {
-
-            type = "RAPID_FIRE";
-
-        } else if (randomPower == 3) {
-
-            type = "SHIELD";
-
-        } else {
-
-            type = "FREEZE_BOMB";
-        }
-
-        powerUps.add(new PowerUp(
-                chicken.getX(),
-                chicken.getY(),
-                type
-        ));
-    }
-
     // boss death and finish the boss level
     private void finishBossLevel() {
 
@@ -947,12 +789,9 @@ public class GamePanel extends JPanel implements KeyListener {
         } else {
 
             scores += 500;
-            currentLevel = 5;
-
-            bossLevel = false;
+            //remove boss but keep boss level active
+            //until its explosion is finished
             boss = null;
-
-            startLevel();
         }
     }
 
@@ -964,7 +803,7 @@ public class GamePanel extends JPanel implements KeyListener {
         }
 
         //boss attack
-        if(boss.canAttack() && !isFreezeActive()){
+        if(boss.canAttack() && !powerUpManager.isFreezeActive()){
 
             eggs.addAll(
                     boss.createAttack()
@@ -1102,10 +941,9 @@ public class GamePanel extends JPanel implements KeyListener {
                 } else {
 
                     //finish pause
-                    long pausedDuration =
-                            System.currentTimeMillis() - pauseStartTime;
+                    long pauseTime = System.currentTimeMillis() - pauseStartTime;
 
-                    adjustTimersAfterPause(pausedDuration);
+                    addPauseTimeToTimers(pauseTime);
 
                     paused = false;
                     pauseStartTime = 0;
@@ -1153,7 +991,8 @@ public class GamePanel extends JPanel implements KeyListener {
             case KeyEvent.VK_D:
                 rightPressed = true;
                 break;
-                case KeyEvent.VK_RIGHT:
+
+            case KeyEvent.VK_RIGHT:
                 rightPressed = true;
                 break;
 

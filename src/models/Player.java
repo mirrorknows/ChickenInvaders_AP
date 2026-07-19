@@ -295,17 +295,17 @@ public class Player {
 
 
     //adjust player timers after game pause
-    public void addPausedTime(long pausedDuration) {
+    public void addPausedTime(long pauseTime) {
 
-        lastShotTime += pausedDuration;
-        lastDamageTime += pausedDuration;
+        lastShotTime += pauseTime;
+        lastDamageTime += pauseTime;
 
         if(rapidFireActive) {
-            rapidFireEndTime += pausedDuration;
+            rapidFireEndTime += pauseTime;
         }
 
         if(shieldActive) {
-            shieldEndTime += pausedDuration;
+            shieldEndTime += pauseTime;
         }
     }
 

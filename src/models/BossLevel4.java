@@ -7,11 +7,8 @@ import java.util.List;
 public class BossLevel4 extends Boss {
 
     private int speed = 2;
-
     private int startY;
-
     private double angle = 0;
-
     private int verticalRange = 30;
 
     public BossLevel4(int x, int y, int lives) {
@@ -34,15 +31,13 @@ public class BossLevel4 extends Boss {
 
         //change direction at borders
         if(x <= 0 || x + width >= panelWidth){
-
             speed *= -1;
         }
 
         //vertical movement
         angle += 0.05;
 
-        y = startY
-                + (int)(verticalRange * Math.sin(angle));
+        y = startY + (int)(verticalRange * Math.sin(angle));
     }
 
     //boss level 4 attacks in 4 directions

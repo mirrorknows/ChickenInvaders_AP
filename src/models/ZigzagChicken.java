@@ -2,8 +2,10 @@ package models;
 
 public class ZigzagChicken extends Chicken {
 
+    //control zigzag move
     private double angle = 0;
 
+    //zigzag move range
     private final int moveRange = 10;
 
     public ZigzagChicken(int x, int y, int lives) {
@@ -27,62 +29,70 @@ public class ZigzagChicken extends Chicken {
             return;
         }
 
+        //get the current cell position
         double targetX = cell.getX();
         double targetY = cell.getY();
 
+        //distance to the cell
         double distanceX = targetX - exactX;
         double distanceY = targetY - exactY;
 
+        //total distance
         double distance = Math.sqrt(
                 distanceX * distanceX +
                         distanceY * distanceY
         );
 
+        //place the chicken on the cell when it gets close
         if (distance <= spawnSpeed) {
 
             exactX = targetX;
             exactY = targetY;
 
+            x = (int)Math.round(exactX);
+            y = (int)Math.round(exactY);
             movingToCell = false;
 
             return;
         }
 
-        //move main position toward cell
+        //move to the cell
         exactX += distanceX / distance * spawnSpeed;
         exactY += distanceY / distance * spawnSpeed;
 
+        //continue zigzag movement
         angle += 0.15;
 
-        int offset =
-                (int) (moveRange * Math.sin(angle));
+        //calculate up and down movement
+        int zigzagY  = (int) (moveRange * Math.sin(angle));
 
         x = (int) Math.round(exactX);
 
         y = Math.max(
                 0,
-                (int) Math.round(exactY) + offset
+                (int) Math.round(exactY) + zigzagY
         );
     }
 
     //continue zigzag movement inside formation
     @Override
-    public void updatePositionFromCell() {
+    public void updateInFormation() {
 
         if (cell == null) {
             return;
         }
 
+        //continue zigzag movement
         angle += 0.15;
 
         exactX = cell.getX();
         exactY = cell.getY();
 
-        int offset =
-                (int) (moveRange * Math.sin(angle));
+        //calculate up and down movement
+        int zigzagY = (int) (moveRange * Math.sin(angle));
 
-        x = (int) exactX;
-        y = (int) exactY + offset;
+        x = (int)Math.round(exactX);
+        y = (int)Math.round(exactY) + zigzagY;
     }
 
     @Override

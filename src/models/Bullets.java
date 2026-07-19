@@ -34,12 +34,15 @@ public class Bullets {
 
         g.drawImage(
                 image,
-                x,
-                y,
-                width,
-                height,
+                x, y,
+                width, height,
                 null
         );
+    }
+
+    //moves bullet up
+    public void fly(){
+        y -= speed;
     }
 
     //getters
@@ -63,8 +66,4 @@ public class Bullets {
         return width;
     }
 
-    //moves bullet up
-    public void fly(){
-        y -= speed;
-    }
 }

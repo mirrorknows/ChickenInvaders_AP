@@ -61,7 +61,6 @@ public class User {
     }
 
     //setters
-
     public void setHighScore(int highScore) {
         this.highScore = highScore;
     }

@@ -5,15 +5,17 @@ public class Cell {
     private int row;
     private int col;
 
-    private int x;
-    private int y;
+    private double x;
+    private double y;
 
+    //number of chickens that must be defeated in this cell
     private int counter;
 
+    //type when a replacement chicken is created
     private String type;
 
 
-    public Cell(int row, int col, int x, int y, int counter, String type){
+    public Cell(int row, int col, double x, double y, int counter, String type){
 
         this.row = row;
         this.col = col;
@@ -26,18 +28,32 @@ public class Cell {
         this.type = type;
     }
 
+    // decrease the number of chickens left in this cell
+    public void decreaseCounter(){
+        counter--;
+    }
+
+    //check if this cell needs another replacement chicken
+    public boolean hasMoreChickens(){
+        return counter > 0;
+    }
+
+    //move the cell together
+    public void move(double dx, double dy){
+        x += dx;
+        y += dy;
+    }
+
     //getters
     public int getCol(){
         return col;
     }
 
-
-    public int getX(){
+    public double getX(){
         return x;
     }
 
-
-    public int getY(){
+    public double getY(){
         return y;
     }
 
@@ -45,19 +61,5 @@ public class Cell {
         return type;
     }
 
-    // decrease the number of chickens left for this cell
-    public void decreaseCounter(){
-        counter--;
-    }
 
-    //if this cell still needs to replace chicken
-    public boolean hasMoreChickens(){
-        return counter > 0;
-    }
-
-    //move grid cell
-    public void move(int dx, int dy){
-        x += dx;
-        y += dy;
-    }
 }
