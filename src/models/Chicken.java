@@ -23,17 +23,16 @@ public abstract class Chicken {
     //cell for the chicken
     protected Cell cell;
 
+    //its true while a chicken is flying to cell
     protected boolean movingToCell = false;
+
     //chicken image
     protected Image image;
 
     public Chicken(
-            int x,
-            int y,
-            int width,
-            int height,
-            int spawnSpeed,
-            int lives,
+            int x, int y,
+            int width, int height,
+            int spawnSpeed, int lives,
             String imagePath
     ){
 
@@ -57,10 +56,8 @@ public abstract class Chicken {
 
         g.drawImage(
                 image,
-                x,
-                y,
-                width,
-                height,
+                x, y,
+                width, height,
                 null
         );
     }
@@ -95,25 +92,28 @@ public abstract class Chicken {
             return;
         }
 
+        //current cell position
         double targetX = cell.getX();
         double targetY = cell.getY();
 
+        //distance to the cell
         double distanceX = targetX - exactX;
         double distanceY = targetY - exactY;
 
+        //total distance to the cell
         double distance = Math.sqrt(
                 distanceX * distanceX +
                         distanceY * distanceY
         );
 
-        //reached the target cell
+        //place the chicken on the cell when it got close
         if (distance <= spawnSpeed) {
 
             exactX = targetX;
             exactY = targetY;
 
-            x = (int) exactX;
-            y = (int) exactY;
+            x = (int)Math.round(exactX);
+            y = (int)Math.round(exactY);
 
             movingToCell = false;
 
@@ -124,6 +124,7 @@ public abstract class Chicken {
         exactX += distanceX / distance * spawnSpeed;
         exactY += distanceY / distance * spawnSpeed;
 
+        //update the position
         x = (int) Math.round(exactX);
         y = (int) Math.round(exactY);
     }
@@ -144,6 +145,7 @@ public abstract class Chicken {
                 bullet.getY() + bullet.getHeight() > y;
     }
 
+    //check if the chicken is hit by the player
     public boolean hitPlayer(Player player){
         return player.getX() < x + width &&
                 player.getX() + player.getWidth() > x &&
@@ -151,35 +153,35 @@ public abstract class Chicken {
                 player.getY() + player.getHeight() > y;
     }
 
-    //normal zigzag and fast don't shoot horizontally
+    //normal zigzag and fast don't shoot horizontally (just shooter)
     public Egg shootAtPlayer(Player player) {
 
         return null;
 
     }
 
-
-    public void followCell() {
-
-        if (cell != null) {
-
-            exactX = cell.getX();
-            exactY = cell.getY();
-
-            x = (int) exactX;
-            y = (int) exactY;
-        }
-    }
-
-    //update chicken position based on cell
-    public void updatePositionFromCell(){
+    //update the chicken inside the formation
+    public void updateInFormation() {
 
         followCell();
+    }
 
+    //keep the chicken on its cell
+    public void followCell() {
+
+        if(cell == null) {
+            return;
+        }
+
+        exactX = cell.getX();
+        exactY = cell.getY();
+
+        x = (int)Math.round(exactX);
+        y = (int)Math.round(exactY);
     }
 
     //move chicken with the formation
-    public void moveWithGrid(int dx, int dy) {
+    public void moveWithFormation(double dx, double dy) {
 
         exactX += dx;
         exactY += dy;

@@ -6,17 +6,21 @@ import java.util.List;
 //final boss level 8
 public class FinalBoss extends Boss {
 
+    private static final double MIN_SPEED = 1.5;
+    private static final double MAX_SPEED = 3.0;
+    private static final double ACCELERATION_AMOUNT = 0.01;
+
     //horizontal movement
     private double exactX;
-    private double moveSpeed = 1.5;
-    private double acceleration = 0.01;
+    private double moveSpeed = 2;
+    private double acceleration = ACCELERATION_AMOUNT;
     private int direction = 1;
 
     //vertical movement
     private int startY;
     private double verticalAngle = 0;
 
-    //50 up and 50 down = 100 pixels
+    //50 up and 50 down
     private final int verticalRange = 50;
 
     //random direction change
@@ -34,7 +38,8 @@ public class FinalBoss extends Boss {
         exactX = x;
         startY = y;
 
-        nextDirectionChangeTime = System.currentTimeMillis() + 2500;
+        nextDirectionChangeTime =
+                System.currentTimeMillis() + getRandDirectionDelay();
     }
 
     @Override
@@ -43,15 +48,15 @@ public class FinalBoss extends Boss {
         //change speed smoothly
         moveSpeed += acceleration;
 
-        if(moveSpeed >= 3) {
+        if(moveSpeed >= MAX_SPEED) {
 
-            moveSpeed = 3;
-            acceleration = -0.01;
+            moveSpeed = MAX_SPEED;
+            acceleration = -ACCELERATION_AMOUNT;
 
-        } else if(moveSpeed <= 1.5) {
+        } else if(moveSpeed <= MIN_SPEED) {
 
-            moveSpeed = 1.5;
-            acceleration = 0.01;
+            moveSpeed = MIN_SPEED;
+            acceleration = ACCELERATION_AMOUNT;
         }
 
         long currentTime = System.currentTimeMillis();
@@ -60,11 +65,8 @@ public class FinalBoss extends Boss {
         if(currentTime >= nextDirectionChangeTime) {
 
             direction *= -1;
-
             nextDirectionChangeTime =
-                    currentTime
-                            + 2000
-                            + (long)(Math.random() * 2000);
+                    currentTime + getRandDirectionDelay();
         }
 
         //horizontal movement
@@ -87,8 +89,12 @@ public class FinalBoss extends Boss {
         //vertical smooth movement
         verticalAngle += 0.03;
 
-        y = startY
-                + (int)(verticalRange * Math.sin(verticalAngle));
+        y = startY + (int)(verticalRange * Math.sin(verticalAngle));
+    }
+
+    //random delay between 2 & 4 sec
+    private long getRandDirectionDelay() {
+        return 2000 + (long)(Math.random() * 2000);
     }
 
     //final boss attacks in 8 directions
@@ -127,10 +133,9 @@ public class FinalBoss extends Boss {
         return attackEggs;
     }
     @Override
-    public void addPausedTime(long pausedDuration) {
+    public void addPausedTime(long pauseTime) {
 
-        super.addPausedTime(pausedDuration);
-
-        nextDirectionChangeTime += pausedDuration;
+        super.addPausedTime(pauseTime);
+        nextDirectionChangeTime += pauseTime;
     }
 }

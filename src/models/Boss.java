@@ -114,9 +114,9 @@ public abstract class Boss {
     }
 
     //boss attack timer after game pause
-    public void addPausedTime(long pausedDuration) {
+    public void addPausedTime(long pauseTime) {
 
-        lastAttackTime += pausedDuration;
+        lastAttackTime += pauseTime;
     }
 
     //getters

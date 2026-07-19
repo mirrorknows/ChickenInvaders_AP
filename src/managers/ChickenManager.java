@@ -1,4 +1,6 @@
-package models;
+package managers;
+
+import models.*;
 
 import java.util.ArrayList;
 
@@ -18,8 +20,6 @@ public class ChickenManager {
     private double groupSpeed;
 
     private Cell[][] cells;
-
-    private double storedMovement = 0;
 
     public ChickenManager(Level level){
 
@@ -197,15 +197,13 @@ public class ChickenManager {
         );
     }
 
-    // create one grid cell and attach a chicken to it
+    // create one cell and attach a chicken to it
     private void addChickenToCell(
-            int row,
-            int col,
-            int x,
-            int y,
+            int row, int col,
+            int x, int y,
             String type){
 
-
+        //create a cell for the chicken
         Cell cell = new Cell(
                 row,
                 col,
@@ -218,38 +216,30 @@ public class ChickenManager {
 
         cells[row][col] = cell;
 
-
-        Chicken chicken =
-                createChickenByType(type,x,y);
-
+        //create first chicken for cell
+        Chicken chicken = createChickenByType(type,x,y);
 
         chicken.setCell(cell);
-
-
         chickens.add(chicken);
 
     }
 
-    //move whole cell and sync chicken with cells
+    //move whole formation and sync chicken with cells
     public void moveGroup(int panelWidth){
 
-        int dy = 0;
+        double dy = 0;
 
-        //save extra movement
-        storedMovement += groupSpeed;
-        int moveAmount = (int) storedMovement;
-        storedMovement -= moveAmount;
-
-        int dx = moveAmount * moveDirection;
+        //move with level speed
+        double dx = groupSpeed * moveDirection;
 
         boolean hitBorder = false;
 
         int chickenWidth = 50;
 
-        int leftMost = Integer.MAX_VALUE;
-        int rightMost = Integer.MIN_VALUE;
+        double leftMost = Double.MAX_VALUE;
+        double rightMost = -Double.MAX_VALUE;
 
-        //find left and right borders of the formation
+        //find left and right edges of the formation
         for (int row = 0; row < 5; row++) {
 
             for (int col = 0; col < 8; col++) {
@@ -269,38 +259,34 @@ public class ChickenManager {
             }
         }
 
-            //no chickens left
-            if (leftMost == Integer.MAX_VALUE ||
-                rightMost == Integer.MIN_VALUE) {
-
+            //stop if all cells have been completely cleared
+            if (leftMost == Double.MAX_VALUE ||
+                rightMost == -Double.MAX_VALUE) {
             return;
         }
 
-        //move exactly to the border
+        //prevent from leaving the screen
         if(moveDirection > 0 && rightMost + dx >= panelWidth){
 
             dx = panelWidth - rightMost;
-
             hitBorder = true;
 
         } else if(moveDirection < 0 && leftMost + dx <= 0){
 
             dx = -leftMost;
-
             hitBorder = true;
 
         }
 
-        //change direction after touching border
+        //change direction after touching border and move down
         if(hitBorder){
 
             dy = moveDownStep;
-
             moveDirection *= -1;
 
         }
 
-        //move all cells together
+        //move every cell as one formation
         for(int row = 0; row < 5; row++){
 
             for(int col = 0; col < 8; col++){
@@ -321,14 +307,14 @@ public class ChickenManager {
             if (chicken.isMovingToCell()) {
 
                 //follow horizontal grid movement
-                chicken.moveWithGrid(dx, 0);
+                chicken.moveWithFormation(dx, 0);
 
-                //move toward its cell
+                //continue flying toward the moving target cell
                 chicken.moveToCell();
 
             } else {
-
-                chicken.updatePositionFromCell();
+                //chickens inside the formation follow their cells directly
+                chicken.updateInFormation();
             }
         }
     }
@@ -380,13 +366,14 @@ public class ChickenManager {
         return bottomChickens;
     }
 
-    //craete and replace chicken
+    //spawn another chicken if the cell counter is not finished
     public void replaceChickenIfNeeded(
             Chicken deadChicken,
             int panelWidth){
 
         Cell cell = deadChicken.getCell();
 
+        //if chicken doesnt have a cell it cannot be replaced
         if(cell == null){
             return;
         }
@@ -396,7 +383,7 @@ public class ChickenManager {
         if(cell.hasMoreChickens()){
 
             int startX;
-
+            //choose randomly one of the two corners
             if(Math.random() < 0.5){
                 startX = 0;
             } else{
@@ -411,7 +398,10 @@ public class ChickenManager {
                             startY
                     );
 
+            //give the new chicken the same cell
             newChicken.setCell(cell);
+
+            //start moving chicken to the cell
             newChicken.startMovingToCell();
             chickens.add(newChicken);
 

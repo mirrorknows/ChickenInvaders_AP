@@ -33,14 +33,12 @@ public class PowerUp {
         if(type.equals("ADD_FIRE")) {
 
             image = ImageLoader.loadImage(
-                    "/images/powerups/add_shot.png"
-            );
+                    "/images/powerups/add_shot.png");
 
         } else if(type.equals("EXTRA_LIFE")) {
 
             image = ImageLoader.loadImage(
-                    "/images/powerups/heal.png"
-            );
+                    "/images/powerups/heal.png");
 
         } else if(type.equals("RAPID_FIRE")) {
 
@@ -51,14 +49,12 @@ public class PowerUp {
         } else if(type.equals("SHIELD")) {
 
             image = ImageLoader.loadImage(
-                    "/images/powerups/sheild.png"
-            );
+                    "/images/powerups/sheild.png");
 
         } else if(type.equals("FREEZE_BOMB")) {
 
             image = ImageLoader.loadImage(
-                    "/images/powerups/freeze.png"
-            );
+                    "/images/powerups/freeze.png");
         }
     }
 
@@ -80,10 +76,8 @@ public class PowerUp {
 
         g.drawImage(
                 image,
-                x,
-                y,
-                width,
-                height,
+                x, y,
+                width, height,
                 null
         );
     }
