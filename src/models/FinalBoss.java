@@ -1,12 +1,10 @@
 package models;
 
-import helpers.ImageLoader;
+import java.util.ArrayList;
+import java.util.List;
 
 //final boss level 8
 public class FinalBoss extends Boss {
-
-    private long lastFinalAttack = 0;
-    private final long finalAttackDelay = 1000;
 
     //horizontal movement
     private double exactX;
@@ -26,20 +24,17 @@ public class FinalBoss extends Boss {
 
     public FinalBoss(int x, int y, int lives) {
 
-        super(x, y, lives);
-
-        width = 270;
-        height = 210;
+        super(
+                x, y,
+                270, 210,
+                lives, 1000,
+                "/images/enemies/boss2.png"
+        );
 
         exactX = x;
         startY = y;
 
-        nextDirectionChangeTime =
-                System.currentTimeMillis() + 2500;
-
-        image = ImageLoader.loadImage(
-                "/images/enemies/boss2.png"
-        );
+        nextDirectionChangeTime = System.currentTimeMillis() + 2500;
     }
 
     @Override
@@ -96,27 +91,46 @@ public class FinalBoss extends Boss {
                 + (int)(verticalRange * Math.sin(verticalAngle));
     }
 
+    //final boss attacks in 8 directions
     @Override
-    public boolean canAttack() {
+    public List<Egg> createAttack() {
 
-        long currentTime = System.currentTimeMillis();
+        List<Egg> attackEggs = new ArrayList<>();
 
-        if(currentTime - lastFinalAttack >= finalAttackDelay) {
+        int centerX = x + width / 2;
+        int centerY = y + height / 2;
 
-            lastFinalAttack = currentTime;
-            return true;
-        }
+        //up
+        attackEggs.add(new Egg(centerX, centerY, 0, -5));
 
-        return false;
+        //down
+        attackEggs.add(new Egg(centerX, centerY, 0, 5));
+
+        //left
+        attackEggs.add(new Egg(centerX, centerY, -5, 0));
+
+        //right
+        attackEggs.add(new Egg(centerX, centerY, 5, 0));
+
+        //up-left
+        attackEggs.add(new Egg(centerX, centerY, -4, -4));
+
+        //up-right
+        attackEggs.add(new Egg(centerX, centerY, 4, -4));
+
+        //down-left
+        attackEggs.add(new Egg(centerX, centerY, -4, 4));
+
+        //down-right
+        attackEggs.add(new Egg(centerX, centerY, 4, 4));
+
+        return attackEggs;
     }
-
     @Override
     public void addPausedTime(long pausedDuration) {
 
         super.addPausedTime(pausedDuration);
 
-        lastFinalAttack += pausedDuration;
         nextDirectionChangeTime += pausedDuration;
     }
-
 }

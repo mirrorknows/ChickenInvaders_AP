@@ -33,31 +33,31 @@ public class PowerUp {
         if(type.equals("ADD_FIRE")) {
 
             image = ImageLoader.loadImage(
-                    "/images/powerups/powerup1/add_shot.png"
+                    "/images/powerups/add_shot.png"
             );
 
         } else if(type.equals("EXTRA_LIFE")) {
 
             image = ImageLoader.loadImage(
-                    "/images/powerups/powerup1/heal.png"
+                    "/images/powerups/heal.png"
             );
 
         } else if(type.equals("RAPID_FIRE")) {
 
             image = ImageLoader.loadImage(
-                    "/images/powerups/powerup1/fast_shot.png"
+                    "/images/powerups/fast_shot.png"
             );
 
         } else if(type.equals("SHIELD")) {
 
             image = ImageLoader.loadImage(
-                    "/images/powerups/powerup1/sheild.png"
+                    "/images/powerups/sheild.png"
             );
 
         } else if(type.equals("FREEZE_BOMB")) {
 
             image = ImageLoader.loadImage(
-                    "/images/powerups/powerup1/freeze.png"
+                    "/images/powerups/freeze.png"
             );
         }
     }

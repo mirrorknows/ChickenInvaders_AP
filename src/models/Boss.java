@@ -1,73 +1,57 @@
 package models;
 
 import helpers.ImageLoader;
-
+import java.util.List;
 import java.awt.*;
-//this class creates boss enemy for boss levels
 
-public class Boss {
+//this class creates boss enemy for boss levels
+public abstract class Boss {
 
     //boss position
     protected int x;
     protected int y;
 
     //boss size
-    protected int width;
-    protected int height;
+    protected final int width;
+    protected final int height;
 
     //boss lives
     private int lives;
-    private int maxLives;
-
-    private int speed = 2;
-
-    //vertical movement settings
-    private int startY;
-
-    private double angle = 0;
-
-    private int verticalRange = 30;
+    private final int maxLives;
 
     //boss attack settings
-    private long lastAttackTime = 0;
-    private final long attackDelay = 1500;
+    private long lastAttackTime;
+    private final long attackDelay;
 
-    protected Image image;
+    //boss image
+    private final Image image;
 
-    public Boss(int x, int y, int lives) {
+
+    public Boss(
+            int x, int y,
+            int width, int height,
+            int lives, long attackDelay,
+            String imagePath
+    ) {
 
         this.x = x;
         this.y = y;
 
-        this.width = 240;
-        this.height = 180;
+        this.width = width;
+        this.height = height;
 
         this.lives = lives;
         this.maxLives = lives;
 
-        this.startY = y;
+        this.attackDelay = attackDelay;
+        this.lastAttackTime = System.currentTimeMillis();
 
-        image = ImageLoader.loadImage(
-                "/images/enemies/boss1.png"
-        );
+        image = ImageLoader.loadImage(imagePath);
     }
 
-    //move boss left and right
-    public void move(int panelWidth) {
-        //horizontal movement
-        x += speed;
+    public abstract void move(int panelWidth);
 
-        //change direction at borders
-        if (x <= 0 || x + width >= panelWidth) {
-            speed *= -1;
-        }
-
-        //vertical smooth movement
-        angle += 0.05;
-        y = startY + (int)(verticalRange * Math.sin(angle));
-
-    }
-
+    public abstract List<Egg> createAttack();
     //reduce boss life after getting hit
     public void takeDamage() {
         lives--;

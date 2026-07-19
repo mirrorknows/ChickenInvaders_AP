@@ -417,7 +417,7 @@ public class GamePanel extends JPanel implements KeyListener {
         bossLevel = true;
         finalBossLevel = false;
 
-        boss = new Boss(300, 80, 50);
+        boss = new BossLevel4(300, 80, 50);
 
         eggs.clear();
         bullets.clear();
@@ -441,24 +441,6 @@ public class GamePanel extends JPanel implements KeyListener {
         powerUps.clear();
 
         lastEggDropTime = System.currentTimeMillis();
-    }
-    //boss level 4 attacks in four directions
-    private void bossLevel4Attack(){
-
-        int centerX = boss.getX() + boss.getWidth() / 2;
-        int centerY = boss.getY() + boss.getHeight() / 2;
-
-        //up
-        eggs.add(new Egg(centerX, centerY, 0, -4));
-
-        //down
-        eggs.add(new Egg(centerX, centerY, 0, 4));
-
-        //left
-        eggs.add(new Egg(centerX, centerY, -4, 0));
-
-        //right
-        eggs.add(new Egg(centerX, centerY, 4, 0));
     }
 
     //final boss attacks in eight directions
@@ -977,11 +959,9 @@ public class GamePanel extends JPanel implements KeyListener {
         //boss attack
         if(boss.canAttack() && !isFreezeActive()){
 
-            if(finalBossLevel){
-                finalBossAttack();
-            } else {
-                bossLevel4Attack();
-            }
+            eggs.addAll(
+                    boss.createAttack()
+            );
         }
 
         //bullet and boss collision
