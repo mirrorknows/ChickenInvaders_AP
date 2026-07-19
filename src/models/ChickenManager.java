@@ -114,9 +114,9 @@ public class ChickenManager {
 
                     case 7:
 
-                        int randomType = (int) (Math.random() * 4);
+                        int type = col % 4;
 
-                        switch (randomType) {
+                        switch (type) {
 
                             case 0:
 
