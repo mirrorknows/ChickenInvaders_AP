@@ -72,7 +72,7 @@ public class FinalBoss extends Boss {
         //horizontal movement
         exactX += moveSpeed * direction;
 
-        //check borders
+        //keep the boss inside the screen
         if(exactX <= 0) {
 
             exactX = 0;
@@ -86,7 +86,7 @@ public class FinalBoss extends Boss {
 
         x = (int)Math.round(exactX);
 
-        //vertical smooth movement
+        //move up and down
         verticalAngle += 0.03;
 
         y = startY + (int)(verticalRange * Math.sin(verticalAngle));

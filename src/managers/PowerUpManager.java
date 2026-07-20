@@ -133,7 +133,7 @@ public class PowerUpManager {
         );
     }
 
-    //active freeze bomb for 3 sec
+    //activate freeze for 3 seconds
     private void activateFreezeBomb() {
 
         freezeActive = true;

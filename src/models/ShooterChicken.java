@@ -39,7 +39,7 @@ public class ShooterChicken extends Chicken {
                 0
         );
     }
-
+    //score player gains after killing shooter chicken
     @Override
     public int getScore(){
         return 25;

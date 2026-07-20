@@ -191,7 +191,7 @@ public class StoreFrame extends JFrame {
 
         mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
-        //actions
+
         defaultButton.addActionListener(e ->
                 selectPlane("Default", 0)
         );
@@ -422,7 +422,7 @@ public class StoreFrame extends JFrame {
         }
     }
 
-    //updates plane buttons
+    //updates all plane buttons
     private void updateButtons() {
 
         updateButton(defaultButton, "Default", 0);

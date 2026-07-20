@@ -130,7 +130,6 @@ public class HighScoreFrame extends JFrame {
         //scroll speed
         scrollPane.getVerticalScrollBar().setUnitIncrement(14);
 
-        //smaller scroll bar
         scrollPane.getVerticalScrollBar().setPreferredSize(
                 new Dimension(10, 0));
 

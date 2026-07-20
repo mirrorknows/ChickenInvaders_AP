@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
 
+//loads images from project resources
 public class ImageLoader {
     public static Image loadImage(String path){
 

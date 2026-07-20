@@ -4,7 +4,7 @@ import helpers.ImageLoader;
 import java.util.List;
 import java.awt.*;
 
-//this class creates boss enemy for boss levels
+//base class for boss enemies
 public abstract class Boss {
 
     //boss position
@@ -119,7 +119,6 @@ public abstract class Boss {
         lastAttackTime += pauseTime;
     }
 
-    //getters
     public int getX() {
         return x;
     }

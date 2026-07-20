@@ -19,6 +19,7 @@ public class ChickenManager {
 
     private double groupSpeed;
 
+    //cells of the 5x8 formation
     private Cell[][] cells;
 
     public ChickenManager(Level level){

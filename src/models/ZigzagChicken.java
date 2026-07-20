@@ -94,7 +94,7 @@ public class ZigzagChicken extends Chicken {
         x = (int)Math.round(exactX);
         y = (int)Math.round(exactY) + zigzagY;
     }
-
+    //score player gains after killing zigzag chicken
     @Override
     public int getScore() {
         return 20;

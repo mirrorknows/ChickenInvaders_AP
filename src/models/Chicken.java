@@ -190,7 +190,6 @@ public abstract class Chicken {
         y = (int) Math.round(exactY);
     }
 
-    //getters
     public int getX() {
         return x;
     }
@@ -214,8 +213,6 @@ public abstract class Chicken {
     public int getLives(){
         return lives;
     }
-
-    //setters
 
     public void setX(int x) {
 

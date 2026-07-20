@@ -8,23 +8,21 @@ import services.UserService;
 import javax.swing.*;
 import java.awt.*;
 
-//this class shows login window
-
+//displays the login window
 public class LoginFrame extends JFrame {
 
-    //fields
     private UserService userService;
 
     //panel
     private JPanel panel;
 
-    //labels
+    //login labels
     private JLabel welcomeLabel;
     private JLabel infoLabel;
     private JLabel usernameLabel;
     private JLabel passwordLabel;
 
-    //text fields
+    //login fields
     private JTextField usernameField;
     private JPasswordField passwordField;
 
@@ -80,7 +78,7 @@ public class LoginFrame extends JFrame {
         panel.add(welcomeLabel);
         panel.add(Box.createVerticalStrut(10));
 
-        //info label : login
+        //login message
         infoLabel = new JLabel("Please login or register");
 
         infoLabel.setForeground(Color.WHITE);
@@ -152,7 +150,6 @@ public class LoginFrame extends JFrame {
 
         userService = new UserService();
 
-        // buttons
         //login button
         loginButton = new JButton("Login");
         buttonStyle(loginButton);
@@ -213,8 +210,7 @@ public class LoginFrame extends JFrame {
     }
 
 
-    //the style of buttons: including background color, font,...
-
+    //apply the same style to buttons
     private void buttonStyle(JButton button){
 
         button.setFont(new Font("Trebuchet MS", Font.BOLD,18));

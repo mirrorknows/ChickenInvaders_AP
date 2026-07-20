@@ -7,24 +7,22 @@ import services.UserService;
 import javax.swing.*;
 import java.awt.*;
 
-//this class creates new user account
-
+//displays the registration window
 public class RegisterFrame extends JFrame {
 
-    //fields
     private UserService userService;
 
     //panel
     private JPanel panel;
 
-    //labels
+    //registration labels
     private JLabel welcomeLabel;
     private JLabel infoLabel;
     private JLabel usernameLabel;
     private JLabel passwordLabel;
     private JLabel confirmPasswordLabel;
 
-    //text fields
+    //registration  fields
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JPasswordField confirmPasswordField;
@@ -70,7 +68,7 @@ public class RegisterFrame extends JFrame {
         panel.add(Box.createVerticalGlue());
 
 
-        //welcome
+        //registration title
         welcomeLabel = new JLabel("CREATE ACCOUNT");
 
         welcomeLabel.setFont(new Font("Verdana", Font.BOLD, 40));
@@ -80,7 +78,7 @@ public class RegisterFrame extends JFrame {
         panel.add(welcomeLabel);
         panel.add(Box.createVerticalStrut(8));
 
-        //info label : enter info
+        //registration message
         infoLabel = new JLabel("Please Enter Your Information");
 
         infoLabel.setForeground(Color.WHITE);
@@ -243,8 +241,7 @@ public class RegisterFrame extends JFrame {
     }
 
 
-    //the style of buttons: including background color, font,...
-
+    //apply the same style to buttons
     private void buttonStyle(JButton button){
 
         button.setFont(new Font("Trebuchet MS", Font.BOLD,18));

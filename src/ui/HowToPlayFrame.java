@@ -109,7 +109,7 @@ public class HowToPlayFrame extends JFrame {
 
     }
 
-    //makes a certain style for every label
+    //apply the same style to control labels
     private void labelStyle(JLabel label){
 
         label.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 20));
@@ -118,7 +118,6 @@ public class HowToPlayFrame extends JFrame {
         label.setPreferredSize(new Dimension(390, 26));
         label.setMaximumSize(new Dimension(390, 26));
 
-        // Center the label
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         label.setHorizontalAlignment(SwingConstants.LEFT);

@@ -4,24 +4,24 @@ import helpers.ImageLoader;
 
 import java.awt.*;
 
-//this class draws a simple explosion effect
+//represents explosion effect
 public class Explosion {
 
+    //explosion position
     private int x;
     private int y;
 
+    //maximum explosion size
     private int maxSize;
 
+    //explosion timer
     private long startTime;
-
     private final long duration = 250;
 
     //explosion image
-    //shared explosion image
     private static final Image image =
             ImageLoader.loadImage(
-                    "/images/planes/Explosion.png"
-            );
+                    "/images/planes/Explosion.png");
 
     public Explosion(int x, int y, int maxSize) {
 
