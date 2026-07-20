@@ -27,7 +27,6 @@ public class GameHistory {
         this.gameOverSoundOn = gameOverSoundOn;
     }
 
-    //getters
 
     public int getId() {
         return id;
@@ -64,7 +63,6 @@ public class GameHistory {
         return gameOverSoundOn;
     }
 
-    //setters
 
     public void setLevel(int level) {
         this.level = level;

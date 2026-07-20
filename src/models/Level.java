@@ -20,6 +20,7 @@ public class Level {
     private int zigzagLives;
     private int shooterLives;
 
+    //number of chickens that must be defeated in each cell
     private int cellCounter;
 
     public Level(int levelNumber) {
@@ -118,7 +119,6 @@ public class Level {
         }
     }
 
-    //getters
     public int getLevelNumber() {
         return levelNumber;
     }

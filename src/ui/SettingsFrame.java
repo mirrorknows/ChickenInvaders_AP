@@ -8,10 +8,10 @@ import services.UserService;
 import javax.swing.*;
 import java.awt.*;
 
-//displays setting menu (for sounds)
+//displays sound settings
 public class SettingsFrame extends JFrame {
 
-    //check boxes
+    //sound check boxes
     private JCheckBox backgroundMusicCheckBox;
     private JCheckBox shotSoundCheckBox;
     private JCheckBox crashSoundCheckBox;
@@ -42,7 +42,7 @@ public class SettingsFrame extends JFrame {
         add(panel);
         panel.add(Box.createVerticalStrut(50));
 
-        //settings label
+        //settings title
         titleLabel = new JLabel("Settings");
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -101,8 +101,6 @@ public class SettingsFrame extends JFrame {
             saveSettings();
         });
 
-        //back button
-
         backButton = new JButton("Back");
 
         buttonStyle(backButton);
@@ -133,6 +131,7 @@ public class SettingsFrame extends JFrame {
 
     }
 
+    //apply the same style to check boxes
     private void checkboxesStyle(JCheckBox checkBox){
 
         checkBox.setFont(new Font("Consolas", Font.PLAIN, 18));
@@ -148,6 +147,7 @@ public class SettingsFrame extends JFrame {
         checkBox.setFocusPainted(false);
     }
 
+    //apply the same style to buttons
     private void buttonStyle(JButton button) {
 
         button.setFont(new Font("Trebuchet MS", Font.BOLD, 18));

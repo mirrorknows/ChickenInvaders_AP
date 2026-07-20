@@ -309,7 +309,6 @@ public class Player {
         }
     }
 
-    //getters
     public int getX() {
         return x;
     }
@@ -361,7 +360,6 @@ public class Player {
         return bossDamage;
     }
 
-    //setters
     public void setLastShotTime(long lastShotTime) {
         this.lastShotTime = lastShotTime;
     }

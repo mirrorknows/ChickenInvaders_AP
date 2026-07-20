@@ -9,7 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 //UserService manages user data
-
 public class UserService {
 
     private DatabaseManager databaseManager;
@@ -38,8 +37,6 @@ public class UserService {
         }
         return false;
     }
-
-
 
     //add a new user to database
     public boolean registerUser(User user) {

@@ -3,7 +3,7 @@ package services;
 import models.GameHistory;
 import models.User;
 
-//final game result
+//saves the final game result
 public class GameResultService {
 
     private GameHistoryService gameHistoryService;
@@ -25,6 +25,7 @@ public class GameResultService {
             return false;
         }
 
+        //create the game history record
         GameHistory gameHistory = new GameHistory(
                 0,
                 user.getId(),
@@ -42,11 +43,12 @@ public class GameResultService {
         if(!saved){
             return false;
         }
-
+        //save the game history
         userService.updateLastLevel(user.getUsername(), level);
 
         user.setLastLevel(level);
 
+        //update high score if the new score is higher
         if(score > user.getHighScore()){
 
             userService.updateHighScore(

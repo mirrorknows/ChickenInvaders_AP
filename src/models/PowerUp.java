@@ -4,7 +4,7 @@ import helpers.ImageLoader;
 
 import java.awt.*;
 
-//this class creates power ups
+//represents power ups
 public class PowerUp {
 
     //powerup type
@@ -82,7 +82,6 @@ public class PowerUp {
         );
     }
 
-    //getters
     public int getX() {
         return x;
     }

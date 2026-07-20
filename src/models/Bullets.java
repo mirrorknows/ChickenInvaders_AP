@@ -4,7 +4,7 @@ import helpers.ImageLoader;
 
 import java.awt.*;
 
-//this class creates bullets
+//represents one player bullet
 public class Bullets {
 
     //bullet position
@@ -45,7 +45,6 @@ public class Bullets {
         y -= speed;
     }
 
-    //getters
     public int getX() {
         return x;
     }

@@ -23,7 +23,7 @@ public class GamePanel extends JPanel implements KeyListener {
     //game loop timer
     private Timer gameTimer;
 
-    //move with keys
+    //pressed movement keys
     private boolean upPressed;
     private boolean downPressed;
     private boolean leftPressed;
@@ -65,7 +65,7 @@ public class GamePanel extends JPanel implements KeyListener {
     private Boss boss;
     private boolean bossLevel = false;
 
-    //checks if current boss is final boss
+    //true if current boss is final boss
     private boolean finalBossLevel = false;
 
     //manages all power ups
@@ -115,6 +115,7 @@ public class GamePanel extends JPanel implements KeyListener {
         //creates the first level
         startLevel();
 
+        //main game timer
         gameTimer = new Timer(16, e -> {
 
             //wait for level 4 boss explosion before starting level 5
@@ -395,7 +396,8 @@ public class GamePanel extends JPanel implements KeyListener {
             g.drawString("FREEZE", x, y);
         }
     }
-    //create chicken for levels
+
+    //start a normal level
     private void startLevel(){
 
         powerUpManager.resetForNewLevel(player);
@@ -475,6 +477,7 @@ public class GamePanel extends JPanel implements KeyListener {
 
         gameTimer.stop();
 
+        //find the game window
         Window window = SwingUtilities.getWindowAncestor(this);
 
         new MainMenu();
@@ -486,6 +489,7 @@ public class GamePanel extends JPanel implements KeyListener {
         }
     }
 
+    //save the game result
     private void saveGameResult(){
 
         if(gameSaved){
@@ -559,7 +563,7 @@ public class GamePanel extends JPanel implements KeyListener {
         }
     }
 
-    //move eggs and remove those leave the screen
+    //move eggs and remove those outside the screen
     private void updateEggs() {
 
         for(int i = 0; i < eggs.size(); i++){

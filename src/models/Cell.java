@@ -2,9 +2,11 @@ package models;
 
 public class Cell {
 
+    //row and column in the formation
     private int row;
     private int col;
 
+    //current cell position
     private double x;
     private double y;
 
@@ -15,6 +17,7 @@ public class Cell {
     private String type;
 
 
+    //create a cell with position counter and chicken type
     public Cell(int row, int col, double x, double y, int counter, String type){
 
         this.row = row;
@@ -44,7 +47,6 @@ public class Cell {
         y += dy;
     }
 
-    //getters
     public int getCol(){
         return col;
     }

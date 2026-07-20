@@ -6,6 +6,7 @@ import java.util.List;
 //boss for level 4
 public class BossLevel4 extends Boss {
 
+    //movement settings
     private int speed = 2;
     private int startY;
     private double angle = 0;
@@ -34,7 +35,7 @@ public class BossLevel4 extends Boss {
             speed *= -1;
         }
 
-        //vertical movement
+        //move up and down
         angle += 0.05;
 
         y = startY + (int)(verticalRange * Math.sin(angle));

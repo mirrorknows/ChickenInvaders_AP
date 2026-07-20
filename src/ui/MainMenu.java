@@ -8,9 +8,6 @@ import java.awt.*;
 import java.net.URL;
 
 //main menu of the game
-// including : new game, high scores,
-// settings , how to play , exit
-
 public class MainMenu extends JFrame {
 
     //panel
@@ -101,7 +98,6 @@ public class MainMenu extends JFrame {
         panel.add(newGameButton);
         panel.add(Box.createVerticalStrut(12));
 
-        //new game action listener
         newGameButton.addActionListener(e -> {
 
             new GameFrame(LoggedUser.getUser().getUsername());
@@ -117,7 +113,6 @@ public class MainMenu extends JFrame {
         panel.add(highScoreButton);
         panel.add(Box.createVerticalStrut(12));
 
-        //high scores action listener
         highScoreButton.addActionListener(e->{
 
             new HighScoreFrame();
@@ -134,7 +129,6 @@ public class MainMenu extends JFrame {
         panel.add(settingsButton);
         panel.add(Box.createVerticalStrut(12));
 
-        //setting action listener
         settingsButton.addActionListener(e->{
 
             new SettingsFrame();
@@ -150,7 +144,6 @@ public class MainMenu extends JFrame {
         panel.add(storeButton);
         panel.add(Box.createVerticalStrut(12));
 
-        //store action listener
         storeButton.addActionListener(e -> {
 
             new StoreFrame();
@@ -164,7 +157,6 @@ public class MainMenu extends JFrame {
         panel.add(howToPlayButton);
         panel.add(Box.createVerticalStrut(12));
 
-        //how to play action listener
         howToPlayButton.addActionListener(e ->{
             new HowToPlayFrame();
 
@@ -185,7 +177,6 @@ public class MainMenu extends JFrame {
         panel.add(exitButton);
         panel.add(Box.createVerticalGlue());
 
-        //exit action listener
         exitButton.addActionListener(e->{
 
             JOptionPane.showMessageDialog(this,

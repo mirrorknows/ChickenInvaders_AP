@@ -1,5 +1,5 @@
 package models;
-
+//user information
 public class User {
 
     private String username;
@@ -7,6 +7,7 @@ public class User {
     private int id;
     private int highScore;
     private int lastLevel;
+    //sound settings
     private boolean musicOn;
     private boolean shotSoundOn;
     private boolean crashSoundOn;
@@ -14,7 +15,6 @@ public class User {
 
     private String selectedPlane = "Default";
 
-    //constructor
     public User (String username, String password, int id, int highScore, int lastLevel,
                  boolean musicOn, boolean shotSoundOn, boolean crashSoundOn, boolean gameOverSoundOn){
         this.username = username;
@@ -27,7 +27,7 @@ public class User {
         this.crashSoundOn = crashSoundOn;
         this.gameOverSoundOn = gameOverSoundOn;
     }
-    //getters
+
     public String getPassword() {
         return password;
     }
@@ -60,7 +60,6 @@ public class User {
         return selectedPlane;
     }
 
-    //setters
     public void setHighScore(int highScore) {
         this.highScore = highScore;
     }
@@ -70,9 +69,6 @@ public class User {
     public void setCrashSoundOn(boolean crashSoundOn) {
         this.crashSoundOn = crashSoundOn;
     }
-    public void setPassword(String password) {
-        this.password = password;
-    }
     public void setGameOverSoundOn(boolean gameOverSoundOn) {
         this.gameOverSoundOn = gameOverSoundOn;
     }
@@ -81,9 +77,6 @@ public class User {
     }
     public void setShotSoundOn(boolean shotSoundOn) {
         this.shotSoundOn = shotSoundOn;
-    }
-    public void setUsername(String username) {
-        this.username = username;
     }
     public void setSelectedPlane(String selectedPlane) {
         this.selectedPlane = selectedPlane;

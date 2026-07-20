@@ -18,14 +18,16 @@ public class Egg {
 
 
     //egg image
-    private static final Image image = ImageLoader.loadImage("/images/enemies/egg.png");
+    private static final Image image =
+            ImageLoader.loadImage("/images/enemies/egg.png");
 
+    //used for normal eggs
     public Egg(int x, int y) {
 
         this(x, y, 0, 4);
     }
 
-    //boss egg with direction
+    //used for shooter and boss attacks
     public Egg(int x, int y, int dx, int dy) {
 
         this.x = x;

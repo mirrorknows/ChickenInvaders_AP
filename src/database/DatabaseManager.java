@@ -2,7 +2,7 @@ package database;
 
 import java.sql.*;
 
-//manage database connection
+//manage database connection and tables
 public class DatabaseManager {
 
     public Connection getConnection() throws SQLException {
@@ -30,7 +30,7 @@ public class DatabaseManager {
                 "music_on INTEGER DEFAULT 1, " +
                 "shot_sound_on INTEGER DEFAULT 1, " +
                 "crash_sound_on INTEGER DEFAULT 1, " +
-                "gameover_sound_on INTEGER DEFAULT 1," +
+                "gameover_sound_on INTEGER DEFAULT 1, " +
                 "selected_plane TEXT DEFAULT 'Default'" +
                 ")";
 
@@ -53,51 +53,10 @@ public class DatabaseManager {
             statement.execute(usersTable);
             statement.execute(gameHistoryTable);
 
-            addSelectedPlaneColumn(connection);
-
         } catch(SQLException e){
 
             e.printStackTrace();
 
-        }
-    }
-
-
-    //add selected plane col
-    private void addSelectedPlaneColumn(Connection connection)
-            throws SQLException {
-
-        boolean columnExists = false;
-
-        //get info users info col
-        String sql = "PRAGMA table_info(users)";
-
-        try(Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql)) {
-
-            //search for selected_plane
-            while(resultSet.next()) {
-
-                String columnName = resultSet.getString("name");
-
-                if(columnName.equals("selected_plane")) {
-                    columnExists = true;
-                    break;
-                }
-            }
-        }
-
-        //add the col if it does not exist
-        if(!columnExists) {
-
-            String addColumnSql =
-                            "ALTER TABLE users " +
-                            "ADD COLUMN selected_plane TEXT DEFAULT 'Default'";
-
-            try(Statement statement = connection.createStatement()) {
-
-                statement.execute(addColumnSql);
-            }
         }
     }
 }

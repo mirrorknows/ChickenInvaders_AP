@@ -10,13 +10,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-
+//manages game history and high scores
 public class GameHistoryService {
 
-    //field
+    //database manager
     private DatabaseManager databaseManager;
 
-    //constructor
     public GameHistoryService(){
         databaseManager = new DatabaseManager();
     }
